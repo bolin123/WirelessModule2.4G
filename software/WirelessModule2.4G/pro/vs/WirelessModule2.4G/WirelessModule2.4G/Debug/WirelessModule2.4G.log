@@ -1,0 +1,21 @@
+﻿生成启动时间为 2017/1/20 15:52:43。
+     1>项目“F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\vs\WirelessModule2.4G\WirelessModule2.4G\WirelessModule2.4G.vcxproj”在节点 2 上(Build 个目标)。
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IF:\project\WirelessModule2.4G\software\WirelessModule2.4G\hal /IF:\project\WirelessModule2.4G\software\WirelessModule2.4G\app /IF:\project\WirelessModule2.4G\software\WirelessModule2.4G\app\net /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:prompt ..\..\..\..\app\MProto.c ..\..\..\..\app\net\NetLayer.c ..\..\..\..\app\Sys.c ..\..\..\..\app\test.c ..\..\..\..\app\WirelessModule.c
+         WirelessModule.c
+     1>f:\project\wirelessmodule2.4g\software\wirelessmodule2.4g\app\wirelessmodule.c(24): error C2229: struct“<unnamed-tag>”有非法的大小为零的数组
+         test.c
+     1>f:\project\wirelessmodule2.4g\software\wirelessmodule2.4g\app\test.c(35): error C2198: “NetBuildStop”: 用于调用的参数太少
+     1>f:\project\wirelessmodule2.4g\software\wirelessmodule2.4g\app\test.c(38): error C2198: “NetbuildSearchDevice”: 用于调用的参数太少
+     1>f:\project\wirelessmodule2.4g\software\wirelessmodule2.4g\app\test.c(71): warning C4013: “NetSetModuleType”未定义；假设外部返回 int
+     1>f:\project\wirelessmodule2.4g\software\wirelessmodule2.4g\app\test.c(73): warning C4013: “NetSetModuleMode”未定义；假设外部返回 int
+     1>f:\project\wirelessmodule2.4g\software\wirelessmodule2.4g\app\test.c(73): error C2065: “NET_MODE_SLAVE”: 未声明的标识符
+         Sys.c
+         NetLayer.c
+         MProto.c
+         正在生成代码...
+     1>已完成生成项目“F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\vs\WirelessModule2.4G\WirelessModule2.4G\WirelessModule2.4G.vcxproj”(Build 个目标)的操作 - 失败。
+
+生成失败。
+
+已用时间 00:00:02.37

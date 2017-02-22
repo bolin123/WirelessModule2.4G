@@ -1,0 +1,8 @@
+---- PHYOperatePacketSend Matches (7 in 3 files) ----
+NetLayer.c (app\net):            PHYOperatePacketSend(addr, g_needSleep, dataCache->data, dataCache->dlen, false);
+NetLayer.c (app\net):    PHYOperatePacketSend(addr, g_needSleep, hb, sizeof(hb), true);
+NetLayer.c (app\net):        PHYOperatePacketSend(to, g_needSleep, usrData, len + 1, false);
+NetLayer.c (app\net):        PHYOperatePacketSend(to, g_needSleep, data, i, false);
+NetLayer.c (app\net):        PHYOperatePacketSend(addr, g_needSleep, data, sizeof(data), false);
+PHYLayer.c (app\net):void PHYOperatePacketSend(uint8_t dstAddr, bool isSleep, const uint8_t *data, uint8_t len, bool directly)
+PHYLayer.h (app\net):void PHYOperatePacketSend(uint8_t dstAddr, bool isSleep, const uint8_t *data, uint8_t len, bool directly);
