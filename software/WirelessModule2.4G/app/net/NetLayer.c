@@ -178,6 +178,16 @@ static void netOperateFrameHandle(uint8_t srcAddr, bool isSleep, bool isBroadcas
     }
 }
 
+static void netHeartbeatHandle(uint8_t addr, bool sleep)
+{
+    if(sleep)
+    {
+        findCacheAndSend(addr);
+    }
+
+    netThrowEvent(NET_EVENT_DEVICE_HEARTBEAT, addr, NULL);
+}
+
 /*
 void NetbuildSubReportDevInfo(uint32_t masterUID, NetbuildSubReportInfo_t *devInfo)
 {
@@ -386,7 +396,7 @@ void NetLayerInit(void)
 {
     VTListInit(&g_sleepDevDataCache);
     PHYInitialize();
-    PHYPacketHandleCallbackRegiste(netOperateFrameHandle, netBuildFrameHandle);
+    PHYPacketHandleCallbackRegiste(netOperateFrameHandle, netBuildFrameHandle, netHeartbeatHandle);
 }
 
 void NetLayerPoll(void)

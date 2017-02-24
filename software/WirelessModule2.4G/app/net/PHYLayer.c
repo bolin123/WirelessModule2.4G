@@ -60,6 +60,7 @@ static PHYHeartbeatHandle_cb g_heartbeatHandle = NULL;
 static uint8_t g_phyRfChannel = 0;
 static uint8_t g_recvBuff[255];
 static uint8_t g_recvCount = 0;
+static uint16_t g_resendOffsetTime = 0;
 
 void PHYSetMac(const uint8_t mac[PHY_MAC_LEN])
 {
@@ -149,11 +150,13 @@ static void phyDataListHandle(void)
 
     if(packet != NULL)
     {
-        if(SysTimeHasPast(packet->lastTime, PHY_RESEND_TIME))
+        if(SysTimeHasPast(packet->lastTime, PHY_RESEND_TIME + g_resendOffsetTime))
         {
             lowLevelDataSend(packet->data, packet->dlen);
             packet->count++;
             packet->lastTime = SysTime();
+            SysRandomSeed(SysTime());
+            g_resendOffsetTime = SysRandom() % 100;
             //SysPrintf("retry:%d, time:%d\n", packet->count, SysTime());
             if(packet->count >= PHY_RESEND_MAX_TIME)
             {
@@ -185,6 +188,17 @@ static void phyAck(uint8_t dstAddr, uint8_t pid)
     lowLevelDataSend(buff, PHY_FRAME_HEAD_LEN + 1);
 }
 
+#if 0
+static void phyReinit(void)
+{
+    SysLog("");
+    memset(g_recvBuff, 0, sizeof(g_recvBuff));
+    g_recvCount = 0;
+    NRF24l01Shutdown();
+    HalSpiReinit();
+}
+#endif
+
 void PHYSwitchChannel(uint8_t ch)
 {
     g_phyRfChannel = ch;
@@ -202,6 +216,7 @@ void PHYPacketRecvHandle(uint8_t *data, uint8_t len)
     uint8_t ackAddr, ackPid;
     uint8_t frameType = frame->type & 0x7f;
     uint8_t i;
+    static uint8_t lastDevAddr = 0xff;
     
     if(frameType == PHY_FRAME_TYPE_EST_NETWORK)
     {
@@ -257,17 +272,21 @@ void PHYPacketRecvHandle(uint8_t *data, uint8_t len)
     HalPrintf("\n");
 #endif
 
-    if(!isBroadcast && frameType != PHY_FRAME_TYPE_ACK) //ack
+    if(!isBroadcast && frameType != PHY_FRAME_TYPE_ACK && frameType != PHY_FRAME_TYPE_HEARTBEAT) //ack
     {
         phyAck(ackAddr, ackPid);
     }
-#if 0
-    if(g_recvPid == frame->pid)
+#if 1
+    if(frameType != PHY_FRAME_TYPE_EST_NETWORK && frameType != PHY_FRAME_TYPE_ACK)
     {
-        HalPrintf("repeat message, ignore %d\n", g_recvPid);
-        return;
+        if(g_recvPid == frame->pid && lastDevAddr == normalAddrInfo->srcAddr)
+        {
+            HalPrintf("repeat message, ignore %d\n", g_recvPid);
+            return;
+        }
+        
+        lastDevAddr = normalAddrInfo->srcAddr;
     }
-    
     g_recvPid = frame->pid;
 #endif
     switch(frameType)
@@ -277,14 +296,12 @@ void PHYPacketRecvHandle(uint8_t *data, uint8_t len)
             {
                 g_optHandle(normalAddrInfo->srcAddr, frame->type & 0x80, isBroadcast, frame->data, frame->dataLen);
             }
-            //NetOperationPacketHandle(normalAddrInfo->srcAddr, frame->data, frame->dataLen);
             break;
         case PHY_FRAME_TYPE_EST_NETWORK:
             if(g_estnetHandle)
             {
                 g_estnetHandle(estNwkAddrInfo->srcMac, isBroadcast, frame->data, frame->dataLen);
             }
-            //NetEstnetPacketHandle(estNwkAddrInfo->srcMac, frame->data, frame->dataLen);
             break;
         case PHY_FRAME_TYPE_ACK:
             VTListForeach(&g_phySendList, sendPacket)
@@ -301,7 +318,6 @@ void PHYPacketRecvHandle(uint8_t *data, uint8_t len)
             }
             break;
         case PHY_FRAME_TYPE_HEARTBEAT:
-            //TODO : event
             if(g_heartbeatHandle)
             {
                 g_heartbeatHandle(normalAddrInfo->srcAddr, frame->type & 0x80);
@@ -310,65 +326,14 @@ void PHYPacketRecvHandle(uint8_t *data, uint8_t len)
         default:
             break;
     }
-    //
-    //if(frame->preamble == PHY_FRAME_PREAMBLE)
-    //{
-    //    switch(frame->type)
-    //    {
-    //        case PHY_FRAME_TYPE_OPERATION:
-    //        case PHY_FRAME_TYPE_USER_DATA:
-    //            normalAddrInfo = (AddrInfoNormal_t *)frame->addrInfo;
-    //            if(memcmp(normalAddrInfo->segAddr, g_segAddr, PHY_MAC_LEN) == 0)
-    //            {
-    //                if(normalAddrInfo->dstAddr == g_myNetAddr \
-    //                   || normalAddrInfo->dstAddr == PHY_BROADCAST_ADDR)
-    //                {
-    //                    if(normalAddrInfo->dstAddr == g_myNetAddr) //need ack
-    //                    {
-    //                        phyAck(normalAddrInfo->srcAddr, frame->pid);
-    //                    }
-    //                    if(frame->type == PHY_FRAME_TYPE_OPERATION)
-    //                    {
-    //                        //NetOperationPacketHandle(normalAddrInfo->srcAddr, frame->data, frame->dataLen);
-    //                    }
-    //                    else
-    //                    {
-    //                        //NetUserPacketHandle(normalAddrInfo->srcAddr, frame->data, frame->dataLen);
-    //                    }
-    //                }
-    //            }
-    //            break;
-    //        case PHY_FRAME_TYPE_EST_NETWORK:
-    //            estNwkAddrInfo = (AddrInfoEstNetwork_t *)frame->addrInfo;
-    //            if(memcmp(estNwkAddrInfo->dstMac, g_phyMacAddr, PHY_MAC_LEN) == 0 \
-    //               || memcmp(estNwkAddrInfo->dstMac, BRAODCASTMAC, PHY_MAC_LEN) == 0)
-    //            {
-    //                //NetEstnetPacketHandle(estNwkAddrInfo->srcMac, frame->data, frame->dataLen);
-    //            }
-    //            break;
-    //        case PHY_FRAME_TYPE_ACK:
-    //            VTListForeach(&g_phySendList, sendPacket)
-    //            {
-    //                if(sendPacket->pid == frame->pid)
-    //                {
-    //                    VTListDel(sendPacket);
-    //                    free(sendPacket->data);
-    //                    free(sendPacket);
-    //                }
-    //            }
-    //            break;
-    //        default:
-    //            break;
-    //    }
 
-    //}
 }
 
 static void phyRecvDataHandle(void)
 {
     uint8_t i;
-    uint8_t buff[RX_PLOAD_WIDTH];
-    static uint16_t lastRecvTime;
+    uint8_t buff[RX_PLOAD_WIDTH] = {0};
+    static SysTime_t lastRecvTime;
     static uint8_t buffLength = 0;
     
     if(NRF24L01DataRecved())
@@ -413,7 +378,7 @@ static void phyRecvDataHandle(void)
 */
 void PHYHeartbeatSend(uint8_t dstAddr, bool isSleep)
 {
-    uint8_t buff[64], dlen;
+    uint8_t buff[64];
     AddrInfoNormal_t *addrInfo;
     PHYFrame_t *frame = (PHYFrame_t *)buff;
 
@@ -492,10 +457,13 @@ void PHYEstnetPacketSend(const uint8_t dstMac[PHY_MAC_LEN], const uint8_t *data,
     }
 }
 
-void PHYPacketHandleCallbackRegiste(PHYOptHandle_cb optCb, PHYEstnetHandle_cb estnetCb)
+void PHYPacketHandleCallbackRegiste(PHYOptHandle_cb optCb, 
+                                             PHYEstnetHandle_cb estnetCb, 
+                                             PHYHeartbeatHandle_cb hbCb)
 {
     g_optHandle = optCb;
     g_estnetHandle = estnetCb;
+    g_heartbeatHandle = hbCb;
 }
 
 void PHYSetSleepMode(bool sleep)

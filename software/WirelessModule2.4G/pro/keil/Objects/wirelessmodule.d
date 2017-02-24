@@ -30,3 +30,4 @@
 .\objects\wirelessmodule.o: ..\..\app\net\NRF24L01P\NRF24L01.h
 .\objects\wirelessmodule.o: ..\..\app\SysTimer.h
 .\objects\wirelessmodule.o: ..\..\app\DevicesManager.h
+.\objects\wirelessmodule.o: ..\..\hal\HalFlash.h

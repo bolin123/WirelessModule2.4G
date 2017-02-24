@@ -53,6 +53,13 @@ void HalSpiInitialize(void)
 
 }
 
+void HalSpiReinit(void)
+{
+    SPI_Cmd(SPI1, DISABLE);
+    SPI_I2S_DeInit(SPI1);
+    HalSpiInitialize();
+}
+
 void HalSpiPoll(void)
 {
     

@@ -2,9 +2,9 @@
 #include "HalGPIO.h"
 #include "WirelessModule.h"
 
-#define DEV_MASTER  1
+#define DEV_MASTER  0
 
-#define SLAVE_TYPE "SLV101"
+#define SLAVE_TYPE "SLV203"
 #define MASTER_TYPE "MST001"
 #define STATUS_LED_PIN 0x11  //PB1
 
@@ -19,26 +19,32 @@ static void masterPoll(void)
     {
         WMNetBuildSearch();
         lastTime = SysTime();
+        
     }
-
+/*
     if(SysTime() > 90000 && !isDeleted)
     {
         delAddr[0] = 1;
         WMNetBuildDelDevice(delAddr, sizeof(delAddr));
         isDeleted = true;
     }
+*/
 #endif
 }
 
 static void slavePoll(void)
 {
     static SysTime_t lastTime;
-    uint8_t data[10] = {1,2,3,4,5,6,7,8,9,0};
+    static uint8_t count = 0;
+    uint8_t data[20] = {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0};
     
-    if(WMGetNetStatus() == WM_STATUS_NET_BUILDED && SysTimeHasPast(lastTime, 2000))
+    if(WMGetNetStatus() == WM_STATUS_NET_BUILDED && SysTimeHasPast(lastTime, 3000))
     {
+        SysLog("send data:");
+        memset(data, count, sizeof(data));
         WMNetUserDataSend(WM_MASTER_NET_ADDR, data, sizeof(data));
         lastTime = SysTime();
+        count++;
     }
 }
 

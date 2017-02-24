@@ -29,7 +29,7 @@ uint8_t *PHYGetMac(uint8_t *mac);
 void PHYSetSleepMode(bool sleep);
 void PHYSetNetAddr(uint8_t addr);
 void PHYSetSegAddr(const uint8_t segAddr[PHY_MAC_LEN]);
-void PHYPacketHandleCallbackRegiste(PHYOptHandle_cb optCb, PHYEstnetHandle_cb estnetCb);
+void PHYPacketHandleCallbackRegiste(PHYOptHandle_cb optCb, PHYEstnetHandle_cb estnetCb, PHYHeartbeatHandle_cb hbCb);
 void PHYSwitchChannel(uint8_t ch);
 
 #endif

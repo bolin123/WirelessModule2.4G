@@ -23,6 +23,7 @@ uint8_t NRF24L01TxPacket(const uint8_t *txbuf, uint8_t len);
 uint8_t NRF24L01RxPacket(uint8_t *rxbuf);
 void NRF24L01ModeSet(NRF24L01Mode_t mode, uint8_t chn);
 uint8_t NRF24L01GetStatus(void);
+void NRF24l01Shutdown(void);
 
 #endif
 

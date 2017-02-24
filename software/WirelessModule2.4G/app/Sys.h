@@ -6,6 +6,10 @@
 
 typedef uint32_t SysTime_t;
 
+#define SYS_NET_BUILD_INFO_ADDR  (0x8000000 + 0xF000)  //60k
+#define SYS_DEVICE_INFO_ADDR     (0x8000000 + 0xF400)  //61k
+#define SYS_DEVICE_MAC_ADDR      (0x8000000 + 0xF800)  //62k
+
 //extern uint32_t HalGetTimeCount(void);
 
 #define SysTime HalRunningTime
@@ -21,6 +25,7 @@ uint32_t SysMacToUid(const uint8_t *mac);
 const uint8_t *SysUidToMac(uint32_t uid);
 uint8_t *SysGetMacAddr(void);
 
+void SysReboot(void);
 void SysInitialize(void);
 void SysPoll(void);
 

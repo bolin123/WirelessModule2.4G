@@ -6,6 +6,7 @@
 void HalSpiInitialize(void);
 void HalSpiPoll(void);
 unsigned char HalSpiReadWrite(unsigned char data);
+void HalSpiReinit(void);
 
 #endif
 

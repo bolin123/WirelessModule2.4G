@@ -28,3 +28,4 @@
 .\objects\devicesmanager.o: ..\..\app\net\NetLayer.h
 .\objects\devicesmanager.o: ..\..\app\net\PHYLayer.h
 .\objects\devicesmanager.o: ..\..\app\net\NRF24L01P\NRF24L01.h
+.\objects\devicesmanager.o: ..\..\hal\HalFlash.h

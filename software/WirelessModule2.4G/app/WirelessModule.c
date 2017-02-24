@@ -1,6 +1,7 @@
 #include "WirelessModule.h"
 #include "SysTimer.h"
 #include "DevicesManager.h"
+#include "HalFlash.h"
 
 #define WM_DEVICES_NUM_MAX 32
 
@@ -22,7 +23,6 @@ typedef struct
 {
     uint8_t netAddr;
     uint8_t rfChannel;
-    //uint8_t key;
     uint8_t segAddr[NET_SEG_ADDR_LEN];
 }WMNetbuildInfo_t;
 
@@ -157,10 +157,11 @@ static void updateNetInfoAndSwitchChannel(bool needSave)
     NetSetSegaddress(g_netbuildInfo.segAddr); //网段地址为主设备的MAC地址
     NetSetNetaddress(g_netbuildInfo.netAddr); //设置网络地址
     WMNetBuildStart(false); //切换到工作信道
-    //TODO: save to flash
+
     if(needSave)
     {
-        //save to flash
+        HalFlashErase(SYS_NET_BUILD_INFO_ADDR);
+        HalFlashWrite(SYS_NET_BUILD_INFO_ADDR, &g_netbuildInfo, sizeof(WMNetbuildInfo_t));
     }
 }
 
@@ -242,15 +243,22 @@ static void wmNetlayerEventHandle(NetEventType_t event, uint32_t from, void *arg
         }
         break;
     case NET_EVENT_DEVICE_HEARTBEAT:
-        SysLog("NET_EVENT_DEVICE_HEARTBEAT subAddr = %d", from);
-        DMUpdateHeartbeat((uint8_t)from);
-        if(g_mode == WM_MS_MODE_MASTER)
+        if(DMDeviceAddressFind(from) != NULL)
         {
-            NetSendHeartbeat(from); //ack heartbeat
+            SysLog("NET_EVENT_DEVICE_HEARTBEAT subAddr = %d", from);
+            DMUpdateHeartbeat((uint8_t)from);
+            if(g_mode == WM_MS_MODE_MASTER)
+            {
+                NetSendHeartbeat(from); //ack heartbeat
+            }
         }
         break;
     case NET_EVENT_USER_DATA:
-        SysLog("NET_EVENT_USER_DATA from [%d]", from);
+        if(DMDeviceAddressFind(from) != NULL)
+        {
+            DMUpdateHeartbeat((uint8_t)from);
+            SysLog("NET_EVENT_USER_DATA from [%d]", from);
+        }
         break;
     default:
         break;
@@ -423,6 +431,7 @@ void WMNetBuildStart(bool start)
     {
         if(start)
         {
+            netBuildStatusSet(WM_STATUS_NET_BUILDING);
             NetBuildStart();
         }
         else
@@ -528,20 +537,39 @@ void WMEventRegister(WMEventReport_cb eventHandle)
 
 void WMInitialize(void)
 {
+    uint8_t mac[NET_MAC_ADDR_LEN] = {0x22, 0x02, 0x03, 0x13};
     NetLayerInit();
     NetLayerEventRegister(wmNetlayerEventHandle);
+#if 0
+    HalFlashErase(SYS_DEVICE_MAC_ADDR);
+    HalFlashWrite(SYS_DEVICE_MAC_ADDR, mac, NET_MAC_ADDR_LEN);
+#endif    
+    HalFlashRead(SYS_DEVICE_MAC_ADDR, mac, NET_MAC_ADDR_LEN);
+    NetSetMacAddr(mac);
 
     DMInitialize();
     DMEventRegister(dmEventHandle);
 
-    //read flash, init g_netbuildInfo
-    uint8_t mac[NET_MAC_ADDR_LEN] = {0x22, 0x02, 0x03, 0x11};
- 
-    NetSetMacAddr(mac);
+#if 0
+    WMNetbuildInfo_t info;
+    //uint8_t seg[4] = {0x22, 0x02, 0x03, 0x11};
+    //uint8_t mac[4] = {0x22, 0x02, 0x03, 0x22};
 
+    info.netAddr = 0;
+    info.rfChannel = 100;
+    memcpy(info.segAddr, mac, 4);
+    //memcpy(info.mac, mac, 4);
+    HalFlashErase(SYS_NET_BUILD_INFO_ADDR);
+    HalFlashWrite(SYS_NET_BUILD_INFO_ADDR, &info, sizeof(WMNetbuildInfo_t));
+#endif
     memset(&g_netbuildInfo, 0xff, sizeof(WMNetbuildInfo_t));
-    //loadconfig g_netbuildInfo
-    //if allocated, init network
+    HalFlashRead(SYS_NET_BUILD_INFO_ADDR, &g_netbuildInfo, sizeof(WMNetbuildInfo_t));
+
+    if(g_netbuildInfo.netAddr != 0xff)
+    {
+        netBuildStatusSet(WM_STATUS_NET_BUILDED);
+        updateNetInfoAndSwitchChannel(false);
+    }
     
 }
 

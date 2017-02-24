@@ -1,4 +1,5 @@
 #include "DevicesManager.h"
+#include "HalFlash.h"
 
 #define DM_DEVICE_ALLOCATE_FLAG 0xdd
 
@@ -7,7 +8,9 @@ static DMEventHandle_cb g_eventHandle = NULL;
 
 static void updateDeviceInfoToFlash(void)
 {
-    // TODO: save device info to flash
+    SysLog("");
+    HalFlashErase(SYS_DEVICE_INFO_ADDR);
+    HalFlashWrite(SYS_DEVICE_INFO_ADDR, g_deviceInfo, DM_DEVICES_NUM_MAX * sizeof(DMDevicesInfo_t));
 }
 
 uint8_t DMDeviceUidToAddress(uint32_t uid)
@@ -141,6 +144,12 @@ void DMPoll(void)
 
 void DMInitialize(void)
 {
-    //load flash
+    uint8_t i;
+    HalFlashRead(SYS_DEVICE_INFO_ADDR, g_deviceInfo, DM_DEVICES_NUM_MAX * sizeof(DMDevicesInfo_t));
+    for(i = 0; i < DM_DEVICES_NUM_MAX; i++)
+    {
+        g_deviceInfo[i].hbInfo.isOnline = false;
+        g_deviceInfo[i].hbInfo.lastHBTime = 0;
+    }
 }
 

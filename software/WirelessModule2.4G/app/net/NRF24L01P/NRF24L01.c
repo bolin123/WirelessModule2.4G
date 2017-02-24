@@ -180,7 +180,7 @@ bool NRF24L01Check(void)
 	return true;
 }
 
-static void nrf24l01PowerOff(void)
+void NRF24l01Shutdown(void)
 {
     NRF24L01_CE_LOW();
     nrf24l01WriteReg(WRITE_REG+CONFIG, 0x0D);
@@ -190,7 +190,7 @@ static void nrf24l01PowerOff(void)
 
 void NRF24L01ModeSet(NRF24L01Mode_t mode, uint8_t chn)
 {
-    nrf24l01PowerOff();
+    NRF24l01Shutdown();
     if(mode == NRF24L01RecvMode)
     {
         NRF24L01_CE_LOW();	  

@@ -53,6 +53,11 @@ void SysRandomSeed(uint32_t seed)
     w = SysRandom();
 }
 
+void SysReboot(void)
+{
+    HalReboot();
+}
+
 void SysInitialize(void)
 {
     HalInitialize();
