@@ -38,7 +38,11 @@ typedef struct
 
 typedef void (* DMEventHandle_cb)(uint8_t addr, DMEvent_t event);
 
+uint8_t DMGetOnlineDeviceType(uint8_t *contents);
+uint8_t DMGetRelatedDeviceType(uint8_t *contents);
+
 void DMDeviceDel(DMDevicesInfo_t *device);
+void DMDeviceInfoClear(void);
 void DMDeviceSet(uint8_t addr, uint8_t key, uint32_t uid, uint8_t *type, bool sleep);
 uint8_t DMDeviceCreate(bool sleep, uint8_t key, uint32_t uid, uint8_t *type);
 uint8_t DMDeviceUidToAddress(uint32_t uid);

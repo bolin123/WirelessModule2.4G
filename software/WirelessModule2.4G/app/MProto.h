@@ -3,6 +3,8 @@
 
 #include "Sys.h"
 
-#define MPROTO_DEVICE_TYPE_LEN 6
+void MProtoRecvByte(uint8_t byte);
+void MProtoInitialize(void);
+void MProtoPoll(void);
 
 #endif

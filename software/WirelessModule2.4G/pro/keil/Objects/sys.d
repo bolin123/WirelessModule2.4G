@@ -29,3 +29,4 @@
 .\objects\sys.o: ..\..\app\net\NetLayer.h
 .\objects\sys.o: ..\..\app\net\PHYLayer.h
 .\objects\sys.o: ..\..\app\net\NRF24L01P\NRF24L01.h
+.\objects\sys.o: ..\..\app\MProto.h

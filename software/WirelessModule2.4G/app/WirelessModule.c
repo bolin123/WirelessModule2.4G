@@ -28,7 +28,7 @@ typedef struct
 
 /*心跳时间*/
 static SysTime_t g_lastHbTime;
-static SysTime_t g_hbIntervalTime;
+static SysTime_t g_hbIntervalTime = NET_NORMAL_DEVICE_HBTIME;
 
 static WMNetbuildInfo_t g_netbuildInfo; //设备自己的组网信息，需要保存至flash
 static WMEventReport_cb g_eventHandle = NULL;
@@ -36,7 +36,8 @@ static uint8_t g_myDevType[NET_DEV_TYPE_LEN]; //设备自己的设备类型
 static bool g_isSleepDevice = false; //是否为休眠设备
 static WMNetStatus_t g_netStatus = WM_STATUS_NET_IDLE;
 static WMSearchDeviceInfo_t g_searchDevInfo[WM_SEARCH_DEVICE_NUM]; //搜索到的设备信息
-static WMMasterSlaveMode_t g_mode;
+static WMMasterSlaveMode_t g_mode = WM_MS_MODE_NONE;
+static bool g_onlineStatus = false;
 
 static bool needHandleTheEvent(NetEventType_t event)
 {
@@ -137,9 +138,21 @@ WMNetStatus_t WMGetNetStatus(void)
     return g_netStatus;
 }
 
+bool WMIsDeviceOnline(void)
+{
+    if(g_mode == WM_MS_MODE_MASTER)
+    {
+        return true;
+    }
+    else
+    {
+        return g_onlineStatus;
+    }
+}
+
 static void netBuildDone(void *args)
 {
-    WMEvent_t event = (WMEvent_t)args;
+    WMEvent_t event = (WMEvent_t)((uint32_t)args);
     
     //send search result
     SysLog("");
@@ -168,6 +181,22 @@ static void updateNetInfoAndSwitchChannel(bool needSave)
 static void dmEventHandle(uint8_t addr, DMEvent_t event)
 {
     SysLog("Dev address %d: %s", addr, event == DM_EVENT_ONLINE ? "online" : "offline");
+
+    if(addr == NET_MASTER_NET_ADDR) //从设备将修改自身的状态
+    {
+        g_onlineStatus = (event == DM_EVENT_ONLINE ? true : false);
+    }
+    else
+    {
+        if(event == DM_EVENT_ONLINE)
+        {
+            g_eventHandle(WM_EVENT_ONLINE, (void *)addr);
+        }
+        else
+        {
+            g_eventHandle(WM_EVENT_OFFLINE, (void *)addr);
+        }
+    }
 }
 
 static void wmNetlayerEventHandle(NetEventType_t event, uint32_t from, void *args)
@@ -228,9 +257,11 @@ static void wmNetlayerEventHandle(NetEventType_t event, uint32_t from, void *arg
     case NET_EVENT_COORDINATION:
         {
             NetCoordinationDev_t *cooDev = (NetCoordinationDev_t *)args;
+            WMCoordinationData_t cooData;
             SysLog("NET_EVENT_COORDINATION: build=%d, key=%d, netAddr=%d, type=%c%c%c%c%c%c, uid=%d", \
                     cooDev->isBuild, cooDev->key, cooDev->netAddr, cooDev->devType[0], cooDev->devType[1], \
                     cooDev->devType[2], cooDev->devType[3], cooDev->devType[4], cooDev->devType[5], cooDev->uid);
+
             if(cooDev->isBuild)
             {
                 DMDeviceSet(cooDev->netAddr, cooDev->key, cooDev->uid, cooDev->devType, cooDev->sleep);
@@ -239,7 +270,15 @@ static void wmNetlayerEventHandle(NetEventType_t event, uint32_t from, void *arg
             {
                 DMDeviceDel(DMDeviceAddressFind(cooDev->netAddr));
             }
-            // TODO: event launch
+            
+            if(g_eventHandle != NULL)
+            {
+                cooData.build   = cooDev->isBuild;
+                cooData.address = cooDev->netAddr;
+                cooData.sleep   = cooDev->sleep;
+                memcpy(cooData.type, cooDev->devType, NET_DEV_TYPE_LEN);
+                g_eventHandle(WM_EVENT_COORDINATION, (void *)&cooData);
+            }
         }
         break;
     case NET_EVENT_DEVICE_HEARTBEAT:
@@ -254,10 +293,23 @@ static void wmNetlayerEventHandle(NetEventType_t event, uint32_t from, void *arg
         }
         break;
     case NET_EVENT_USER_DATA:
-        if(DMDeviceAddressFind(from) != NULL)
         {
-            DMUpdateHeartbeat((uint8_t)from);
-            SysLog("NET_EVENT_USER_DATA from [%d]", from);
+            NetUserData_t *netData = (NetUserData_t *)args;
+            WMUserData_t userData;
+            if(DMDeviceAddressFind(from) != NULL)
+            {
+                DMUpdateHeartbeat((uint8_t)from);
+                SysLog("NET_EVENT_USER_DATA from [%d]", from);
+
+                userData.from = (uint8_t)from;
+                userData.isBroadcast = netData->isBroadcast;
+                userData.dlen = netData->dlen;
+                userData.data = netData->data;
+                if(g_eventHandle != NULL)
+                {
+                    g_eventHandle(WM_EVENT_USER_DATA, (void *)&userData);
+                }
+            }
         }
         break;
     default:
@@ -277,10 +329,17 @@ void WMNetUserDataSend(uint8_t to, uint8_t *data, uint8_t len)
 
 uint8_t WMQueryDeviceInfo(WMQueryType_t type, uint8_t *contents)
 {
-    return 0;
+    if(type == WMQUERY_TYPE_ONLINE)
+    {
+        return DMGetOnlineDeviceType(contents);
+    }
+    else
+    {
+        return DMGetRelatedDeviceType(contents);
+    }
 }
 
-uint8_t WMGetSearchResult(WMSearchResult_t result[WM_SEARCH_DEVICE_NUM])
+uint8_t WMGetSearchResult(uint8_t *result)
 {
     uint8_t i, count = 0;
 
@@ -288,14 +347,19 @@ uint8_t WMGetSearchResult(WMSearchResult_t result[WM_SEARCH_DEVICE_NUM])
     {
         if(g_searchDevInfo[i].uid != 0)
         {
+            /*
             result[i].sid = i;
             result[i].sleep = g_searchDevInfo[i].sleep;
             memcpy(result[i].type, g_searchDevInfo[i].type, NET_DEV_TYPE_LEN);
+            */
+            result[i * sizeof(WMSearchResult_t)] = i;
+            memcpy(&result[i * sizeof(WMSearchResult_t) + 1], g_searchDevInfo[i].type, NET_DEV_TYPE_LEN);
+            result[i * sizeof(WMSearchResult_t) + NET_DEV_TYPE_LEN + 1] = g_searchDevInfo[i].sleep;
             count++;
         }
     }
 
-    return count;
+    return (count * sizeof(WMSearchResult_t));
 }
 
 int8_t WMNetBuildDelDevice(uint8_t *addr, uint8_t num)
@@ -330,6 +394,7 @@ int8_t WMNetBuildDelDevice(uint8_t *addr, uint8_t num)
 int8_t WMNetBuildAddDevice(uint8_t *id, uint8_t num)
 {
     uint8_t i;
+    uint8_t address[WM_SEARCH_DEVICE_NUM] = {0};
     uint8_t subAddr, keyVal;
     uint16_t hbTime, switchTime;
     NetbuildAddSubInfo_t subInfo;
@@ -372,6 +437,7 @@ int8_t WMNetBuildAddDevice(uint8_t *id, uint8_t num)
             subInfo.key = keyVal;
             subInfo.rfChannel = g_netbuildInfo.rfChannel;
             memcpy(subInfo.masterType, g_myDevType, NET_DEV_TYPE_LEN);
+            address[i] = subAddr; //记录地址，用于返回添加结果
             
             //随机分配发送心跳的时间
             switchTime = (num - i) * 200 * 3;
@@ -388,6 +454,10 @@ int8_t WMNetBuildAddDevice(uint8_t *id, uint8_t num)
             SysErrLog("id[%d] out of rang!", id[i]);
             return -1;
         }
+    }
+    if(g_eventHandle != NULL)
+    {
+        g_eventHandle(WM_EVENT_ADD_RESULT, address);
     }
     SysTimerSet(netBuildDone, num * 600, 0, (void *)WM_EVENT_ADD_DEV_END);
     return 0;
@@ -427,7 +497,7 @@ int8_t WMNetBuildSearch(void)
 
 void WMNetBuildStart(bool start)
 {
-    if(g_mode == WM_MS_MODE_SLAVE)
+    //if(g_mode == WM_MS_MODE_SLAVE)
     {
         if(start)
         {
@@ -449,7 +519,7 @@ int8_t WMDeviceCoordination(bool isBuild, uint8_t addr1, uint8_t addr2)
     if(g_mode == WM_MS_MODE_MASTER)
     {
         device = DMDeviceAddressFind(addr1);
-        if(device != NULL)
+        if(device != NULL && device->hbInfo.isOnline)
         {
             cooDev.isBuild = isBuild;
             cooDev.key = device->netInfo.key;
@@ -459,9 +529,13 @@ int8_t WMDeviceCoordination(bool isBuild, uint8_t addr1, uint8_t addr2)
             memcpy(cooDev.devType, device->netInfo.devType, NET_DEV_TYPE_LEN);
             NetCoordinationOperate(addr2, &cooDev); //将addr1的设备信息发给add2设备
         }
+        else
+        {
+            return -1;
+        }
         
         device = DMDeviceAddressFind(addr2);
-        if(device != NULL)
+        if(device != NULL && device->hbInfo.isOnline)
         {
             cooDev.isBuild = isBuild;
             cooDev.key = device->netInfo.key;
@@ -470,6 +544,10 @@ int8_t WMDeviceCoordination(bool isBuild, uint8_t addr1, uint8_t addr2)
             cooDev.uid = device->netInfo.uid;
             memcpy(cooDev.devType, device->netInfo.devType, NET_DEV_TYPE_LEN);
             NetCoordinationOperate(addr1, &cooDev); //将addr2的设备信息发给add1设备
+        }
+        else
+        {
+            return -1;
         }
         
         return 0;
@@ -528,6 +606,17 @@ void WMSetModuleType(const uint8_t *type)
 {
     SysLog("%c%c%c%c%c%c", type[0], type[1], type[2], type[3], type[4], type[5]);
     memcpy(g_myDevType, type, NET_DEV_TYPE_LEN);
+}
+
+void WMNetInfoClear(void)
+{
+    DMDeviceInfoClear();
+    HalFlashErase(SYS_NET_BUILD_INFO_ADDR);
+    updateNetInfoAndSwitchChannel(false);
+    if(g_mode == WM_MS_MODE_SLAVE)
+    {
+        netBuildStatusSet(WM_STATUS_NET_IDLE);
+    }
 }
 
 void WMEventRegister(WMEventReport_cb eventHandle)

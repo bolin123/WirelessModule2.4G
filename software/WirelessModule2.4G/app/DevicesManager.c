@@ -13,6 +13,52 @@ static void updateDeviceInfoToFlash(void)
     HalFlashWrite(SYS_DEVICE_INFO_ADDR, g_deviceInfo, DM_DEVICES_NUM_MAX * sizeof(DMDevicesInfo_t));
 }
 
+uint8_t DMGetOnlineDeviceType(uint8_t *contents)
+{
+    uint8_t len = 0;
+    uint8_t i;
+    DMDevicesInfo_t *devinfo;
+
+    for(i = 0; i < DM_DEVICES_NUM_MAX; i++)
+    {
+        devinfo = &g_deviceInfo[i];
+        if(devinfo->allocate == DM_DEVICE_ALLOCATE_FLAG && devinfo->hbInfo.isOnline)
+        {
+            contents[len++] = i;
+            memcpy(&contents[len], devinfo->netInfo.devType, NET_DEV_TYPE_LEN);
+            len += NET_DEV_TYPE_LEN;
+            contents[len++] = devinfo->netInfo.sleep;
+        }
+    }
+    
+    return len;
+}
+
+uint8_t DMGetRelatedDeviceType(uint8_t *contents)
+{
+    uint8_t i;
+    uint8_t len = 0;
+    DMDevicesInfo_t *devinfo;
+
+    for(i = 0; i < DM_DEVICES_NUM_MAX; i++)
+    {
+        devinfo = &g_deviceInfo[i];
+        if(devinfo->allocate == DM_DEVICE_ALLOCATE_FLAG)
+        {
+            contents[len++] = i;
+            memcpy(&contents[len], devinfo->netInfo.devType, NET_DEV_TYPE_LEN);
+            len += NET_DEV_TYPE_LEN;
+            contents[len++] = devinfo->netInfo.sleep;
+        }
+    }
+    return len;
+}
+
+void DMDeviceInfoClear(void)
+{
+    HalFlashErase(SYS_DEVICE_INFO_ADDR);
+}
+
 uint8_t DMDeviceUidToAddress(uint32_t uid)
 {
     uint8_t i;

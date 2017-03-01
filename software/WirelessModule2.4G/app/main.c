@@ -2,7 +2,7 @@
 #if defined(PC_ENV)
 #include <Windows.h>
 #endif
-#include "testWM.h"
+//#include "testWM.h"
 
 #if defined(PC_ENV)
 #define SLEEP_MS() Sleep(1)
@@ -18,10 +18,10 @@ uint32_t HalGetTimeCount(void)
 int main(void)
 {
     SysInitialize();
-    testWMInit();
+    //testWMInit();
     while(1)
     {
-        testWMPoll();
+        //testWMPoll();
         SysPoll();
         #if defined(PC_ENV)
         SLEEP_MS();

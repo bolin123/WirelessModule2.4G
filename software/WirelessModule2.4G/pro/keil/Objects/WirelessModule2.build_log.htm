@@ -26,20 +26,13 @@ Project File Date:  02/10/2017
 
 <h2>Output:</h2>
 Build target 'WirelessModule2.4G'
-compiling testWM.c...
-..\..\app\testWM.c(15): warning:  #177-D: variable "isDeleted" was declared but never referenced
-      static bool isDeleted = false;
-..\..\app\testWM.c(16): warning:  #177-D: variable "delAddr" was declared but never referenced
-      uint8_t delAddr[1];
-..\..\app\testWM.c(76): warning:  #767-D: conversion from pointer to smaller integer
-          WMNetStatus_t  netStatus = (WMNetStatus_t)args;
-..\..\app\testWM.c(11): warning:  #177-D: function "masterPoll" was declared but never referenced
-  static void masterPoll(void)
-..\..\app\testWM.c: 4 warnings, 0 errors
+compiling main.c...
+compiling Sys.c...
+compiling DevicesManager.c...
 linking...
-Program Size: Code=13352 RO-data=772 RW-data=148 ZI-data=2884  
+Program Size: Code=15240 RO-data=744 RW-data=156 ZI-data=4636  
 FromELF: creating hex file...
-".\Objects\WirelessModule2.4G" - 0 Error(s), 4 Warning(s).
+".\Objects\WirelessModule2.4G" - 0 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -66,9 +59,9 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:CORE:5.0.0
 
    * Component: Keil::Device:Startup:1.5.0
-      Source file:   Device\Source\ARM\startup_stm32f030.s
       Source file:   Device\Source\system_stm32f0xx.c
       Source file:   Device\Source\ARM\STM32F0xx_OPT.s
+      Source file:   Device\Source\ARM\startup_stm32f030.s
 </pre>
 </body>
 </html>

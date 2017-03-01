@@ -27,10 +27,9 @@ typedef struct{
     HalUartDmaRecvIncreaseCb_t incHandle;
 }halUartConfig_t;
 
-static halUartConfig_t g_uartConfig[UART_MAX_NUM];
+//static halUartConfig_t g_uartConfig[UART_MAX_NUM];
 static uint8_t *g_dmaBuffer;
 static uint16_t g_dmaBufferSize = 0;
-
 
 static void NVIC_USART_Configuration(uint8_t irqChannel, uint8_t priority)
 {
@@ -130,13 +129,14 @@ static void usartConfiguration(const HalUartConfig_t *cfg, USART_TypeDef* uartNO
     USART_Cmd(uartNO, ENABLE);
 }
 
-
+/*
 void HalUartDmaInit(uint8_t uart, uint8_t *buff, uint16_t len, void *cb)
 {
     g_dmaBuffer = buff;
     g_dmaBufferSize = len;
     g_uartConfig[uart].incHandle = (HalUartDmaRecvIncreaseCb_t)cb;
 }
+*/
 
 static void usartInit(halUartConfig_t *config)
 {
@@ -165,38 +165,39 @@ static void usartInit(halUartConfig_t *config)
 
 ROM_FUNC void HalUartInitialize(void)
 {
-    halUartConfig_t *uart;
+    halUartConfig_t uart;
 #if 1 
-    uart = &g_uartConfig[HAL_UART_0];
-    uart->baudRate = 115200;
-    uart->cb       = NULL;
-    uart->gpioX    = GPIOA;
-    uart->ioRX     = GPIO_Pin_10;
-    uart->rxPinSource = GPIO_PinSource10;
-    uart->ioTX     = GPIO_Pin_9;
-    uart->txPinSource = GPIO_PinSource9;
-    uart->irq      = USART1_IRQn;
-    uart->priority = HAL_UART_0;
-    uart->uartNO   = USART1;
-    uart->mode     = UART_RECV_INT;
-    uart->incHandle = NULL;
-    usartInit(uart);
+    //uart = &g_uartConfig[HAL_UART_0];
+    //print uart port(日志打印串口)
+    uart.baudRate = 115200;
+    uart.cb       = NULL;
+    uart.gpioX    = GPIOA;
+    uart.ioRX     = GPIO_Pin_10;
+    uart.rxPinSource = GPIO_PinSource10;
+    uart.ioTX     = GPIO_Pin_9;
+    uart.txPinSource = GPIO_PinSource9;
+    uart.irq      = USART1_IRQn;
+    uart.priority = HAL_UART_0;
+    uart.uartNO   = USART1;
+    uart.mode     = UART_RECV_INT;
+    uart.incHandle = NULL;
+    usartInit(&uart);
 #endif 
-    uart = &g_uartConfig[HAL_UART_1];
-    uart->baudRate = 115200;
-    uart->cb       = NULL;
-    uart->gpioX    = GPIOA;
-    uart->ioRX     = GPIO_Pin_3;
-    uart->rxPinSource = GPIO_PinSource3;
-    uart->ioTX     = GPIO_Pin_2;
-    uart->txPinSource = GPIO_PinSource2;
-    uart->irq      = USART2_IRQn;
-    uart->priority = HAL_UART_1;
-    uart->uartNO   = USART2;
-    uart->mode     = UART_RECV_INT;
-    uart->incHandle = NULL;
-    usartInit(uart);
-
+    //uart = &g_uartConfig[HAL_UART_1];
+    //communicate uart port(数据通信串口)
+    uart.baudRate = 115200;
+    uart.cb       = NULL;
+    uart.gpioX    = GPIOA;
+    uart.ioRX     = GPIO_Pin_3;
+    uart.rxPinSource = GPIO_PinSource3;
+    uart.ioTX     = GPIO_Pin_2;
+    uart.txPinSource = GPIO_PinSource2;
+    uart.irq      = USART2_IRQn;
+    uart.priority = HAL_UART_1;
+    uart.uartNO   = USART2;
+    uart.mode     = UART_RECV_INT;
+    uart.incHandle = NULL;
+    usartInit(&uart);
 }
 
 ROM_FUNC void HalUartPoll(void)
@@ -204,16 +205,28 @@ ROM_FUNC void HalUartPoll(void)
 
 }
 
+extern void MProtoRecvByte(uint8_t byte);
+
 static void HalUartDataCallback(HalUart_t uart, uint8_t data)
 {
-    //HalUartRecvData(uart, &data, 1);
+    if(uart == HAL_UART_1)
+    {
+        MProtoRecvByte(data);
+    }
 }
 
 void HalUartInit(HalUart_t uart, const HalUartConfig_t *cfg)
 {
-    if(uart < HAL_UART_COUNT)
+    if(uart == HAL_UART_0)
     {
-        usartConfiguration(cfg, g_uartConfig[uart].uartNO, g_uartConfig[uart].mode);
+        usartConfiguration(cfg, USART1, UART_RECV_INT);
+    }
+    else if(uart == HAL_UART_1)
+    {
+        usartConfiguration(cfg, USART2, UART_RECV_INT);
+    }
+    else
+    {
     }
 }
 
@@ -227,13 +240,27 @@ ROM_FUNC uint16_t HalUartWrite(HalUart_t uart, const void *data, uint16_t len)
 {
     uint16_t i;
     uint8_t *dataByte = (uint8_t *)data;
+    USART_TypeDef *uartType;
+
+    if(uart == HAL_UART_0)
+    {
+        uartType = USART1;
+    }
+    else if(uart == HAL_UART_1)
+    {
+        uartType = USART2;
+    }
+    else
+    {
+        return 0;
+    }
 
     for(i=0; i<len; i++)
     {
-        USART_SendData(g_uartConfig[uart].uartNO, (uint16_t)dataByte[i]);
-        while(USART_GetFlagStatus(g_uartConfig[uart].uartNO, USART_FLAG_TXE) == RESET); //wait for Transmit data register empty
+        USART_SendData(uartType, (uint16_t)dataByte[i]);
+        while(USART_GetFlagStatus(uartType, USART_FLAG_TXE) == RESET); //wait for Transmit data register empty
     }
-    USART_ClearITPendingBit(g_uartConfig[uart].uartNO, USART_IT_TC);
+    USART_ClearITPendingBit(uartType, USART_IT_TC);
     return len;
 }
 

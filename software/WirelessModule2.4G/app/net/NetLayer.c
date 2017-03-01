@@ -14,7 +14,6 @@ typedef enum
     NET_PROTO_TYPE_ADD_DEVICE,
     NET_PROTO_TYPE_DEL_DEVICE,
     NET_PROTO_TYPE_COORDINATION,
-//    NET_PROTO_TYPE_HEARTBEAT,
     NET_PROTO_TYPE_USER_DATA,
     NET_PROTO_TYPE_ACK
 }NetProtocolType_t;
@@ -168,6 +167,7 @@ static void netOperateFrameHandle(uint8_t srcAddr, bool isSleep, bool isBroadcas
     case NET_PROTO_TYPE_USER_DATA:
         {
             NetUserData_t userData;
+            userData.isBroadcast = isBroadcast;
             userData.dlen = len - 1;
             userData.data = optData;
             netThrowEvent(NET_EVENT_USER_DATA, srcAddr, &userData);

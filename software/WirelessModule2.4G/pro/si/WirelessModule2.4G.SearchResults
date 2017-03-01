@@ -1,5 +1,5 @@
----- DMUpdateHeartbeat Matches (4 in 3 files) ----
-DevicesManager.c (app):void DMUpdateHeartbeat(uint8_t addr)
-DevicesManager.h (app):void DMUpdateHeartbeat(uint8_t addr);
-WirelessModule.c (app):            DMUpdateHeartbeat((uint8_t)from);
-WirelessModule.c (app):            DMUpdateHeartbeat((uint8_t)from);
+---- WMEventReport_cb Matches (4 in 2 files) ----
+WirelessModule.c (app):static WMEventReport_cb g_eventHandle = NULL;
+WirelessModule.c (app):void WMEventRegister(WMEventReport_cb eventHandle)
+WirelessModule.h (app):typedef void(*WMEventReport_cb)(WMEvent_t event, void *args);
+WirelessModule.h (app):void WMEventRegister(WMEventReport_cb eventHandle);

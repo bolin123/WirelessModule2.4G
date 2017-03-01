@@ -64,6 +64,7 @@ typedef struct
 
 typedef struct
 {
+    bool isBroadcast;
     uint8_t dlen;
     uint8_t *data;
 }NetUserData_t;

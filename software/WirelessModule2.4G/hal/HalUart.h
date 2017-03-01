@@ -6,9 +6,9 @@
 //Uart
 typedef enum
 {
-    HAL_UART_0, //sim800c
-    HAL_UART_1, //com
-    HAL_UART_2, //debug
+    HAL_UART_0, //print uart port(USART1, PA9\10)
+    HAL_UART_1, //communicate uart port(USART2, PA2\3)
+    HAL_UART_2, 
     HAL_UART_COUNT,
     HAL_UART_INVALID = 0xff,
 }HalUart_t;
