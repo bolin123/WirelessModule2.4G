@@ -56,6 +56,7 @@ uint8_t DMGetRelatedDeviceType(uint8_t *contents)
 
 void DMDeviceInfoClear(void)
 {
+    memset(g_deviceInfo, DM_DEVICE_INVALID_FLAG, sizeof(DMDevicesInfo_t) * DM_DEVICES_NUM_MAX);
     HalFlashErase(SYS_DEVICE_INFO_ADDR);
 }
 
@@ -97,12 +98,34 @@ void DMDeviceDel(DMDevicesInfo_t *device)
     }
 }
 
+void DMMasterDeviceSet(uint8_t key, uint32_t uid, uint8_t *type, SysTime_t hbTime)
+{
+    DMDevicesInfo_t *device = &g_deviceInfo[NET_MASTER_NET_ADDR];
+
+    device->allocate = DM_DEVICE_ALLOCATE_FLAG;
+    device->netInfo.sleep = false;
+    device->netInfo.key = key;
+    device->netInfo.uid = uid;
+    memcpy(device->netInfo.devType, type, NET_DEV_TYPE_LEN);
+    memset(&device->hbInfo, 0, sizeof(DMDeviceNetInfo_t));
+    device->hbInfo.hbInterval = hbTime;
+
+    updateDeviceInfoToFlash();
+}
+
 /*设置设备信息
 * 
 */
 void DMDeviceSet(uint8_t addr, uint8_t key, uint32_t uid, uint8_t *type, bool sleep)
 {
-    DMDevicesInfo_t *device = &g_deviceInfo[addr];
+    DMDevicesInfo_t *device;
+    
+    if(addr > (DM_DEVICES_NUM_MAX - 1))
+    {
+        return;
+    }
+        
+    device = &g_deviceInfo[addr];
     
     device->allocate = DM_DEVICE_ALLOCATE_FLAG;
     device->netInfo.sleep = sleep;
@@ -110,6 +133,7 @@ void DMDeviceSet(uint8_t addr, uint8_t key, uint32_t uid, uint8_t *type, bool sl
     device->netInfo.uid = uid;
     memcpy(device->netInfo.devType, type, NET_DEV_TYPE_LEN);
     memset(&device->hbInfo, 0, sizeof(DMDeviceNetInfo_t));
+    device->hbInfo.hbInterval = sleep ? NET_SLEEP_DEVICE_HBTIME : NET_NORMAL_DEVICE_HBTIME;
 
     updateDeviceInfoToFlash();
 }
@@ -129,7 +153,7 @@ uint8_t DMDeviceCreate(bool sleep, uint8_t key, uint32_t uid, uint8_t *type)
             g_deviceInfo[i].netInfo.uid = uid;
             memcpy(g_deviceInfo[i].netInfo.devType, type, NET_DEV_TYPE_LEN);
             memset(&g_deviceInfo[i].hbInfo, 0, sizeof(DMDeviceNetInfo_t));
-            
+            g_deviceInfo[i].hbInfo.hbInterval = sleep ? NET_SLEEP_DEVICE_HBTIME : NET_NORMAL_DEVICE_HBTIME;
             updateDeviceInfoToFlash();
             return i;
         }
@@ -159,13 +183,13 @@ void DMUpdateHeartbeat(uint8_t addr)
 static void heartbeatPoll(void)
 {
     static uint8_t address = 0;
-    uint32_t hbTime;
+    //uint32_t hbTime;
     DMDevicesInfo_t *info = &g_deviceInfo[address];
 
     if(info->allocate == DM_DEVICE_ALLOCATE_FLAG && info->hbInfo.isOnline)
     {
-        hbTime = info->netInfo.sleep ? NET_SLEEP_DEVICE_HBTIME : NET_NORMAL_DEVICE_HBTIME;
-        if(SysTimeHasPast(info->hbInfo.lastHBTime, hbTime * 3)) // 3次未收到心跳，认为是掉线
+        //hbTime = info->netInfo.sleep ? NET_SLEEP_DEVICE_HBTIME : NET_NORMAL_DEVICE_HBTIME;
+        if(SysTimeHasPast(info->hbInfo.lastHBTime, info->hbInfo.hbInterval * 3)) // 3次未收到心跳，认为是掉线
         {
             info->hbInfo.isOnline = false;
             g_eventHandle(address, DM_EVENT_OFFLINE);

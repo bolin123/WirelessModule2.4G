@@ -56,7 +56,7 @@ static void netEventHandle(NetEventType_t event, uint32_t from, void *args)
         coDev.key = 0x99;
         coDev.netAddr = 0x01;
         memcpy(coDev.devType, "MOD123", NET_DEV_TYPE_LEN);
-        NetCoordinationOperate(0x01, &coDev);
+        NetCoordinationOperate(0x01, false, &coDev);
 
         uint8_t usrData[10] = {1,2,3,4,5,6,7,8,9,0};
         NetUserDataSend(0x01, usrData, sizeof(usrData));

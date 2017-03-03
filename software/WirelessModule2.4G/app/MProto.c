@@ -184,7 +184,7 @@ static void mprotoFrameHandle(MProtoFrameType_t type, bool needAck, uint8_t *dat
     case MPROTO_FRAME_TYPE_DEL_DEVICE:
         WMNetBuildDelDevice(data, dlen);
         break;
-    //case MPROTO_FRAME_TYPE_HEARTBEAT: //ignor
+    //case MPROTO_FRAME_TYPE_HEARTBEAT: //ignore
     //    break;
     case MPROTO_FRAME_TYPE_USER_DATA:
         {
@@ -192,7 +192,7 @@ static void mprotoFrameHandle(MProtoFrameType_t type, bool needAck, uint8_t *dat
             WMNetUserDataSend(userData->to, userData->data, userData->dlen);
         }
         break;
-    //case MPROTO_FRAME_TYPE_ON_OFFLINE: //ignor
+    //case MPROTO_FRAME_TYPE_ON_OFFLINE: //ignore
     //    break;
     case MPROTO_FRAME_TYPE_COORDINATION:
         if(WMDeviceCoordination(data[0], data[1], data[2]) < 0)

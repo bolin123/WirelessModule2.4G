@@ -9,13 +9,13 @@
 
 typedef enum
 {
-    NET_PROTO_TYPE_SEARCH = 0x01,
-    NET_PROTO_TYPE_REPORT_INFO,
-    NET_PROTO_TYPE_ADD_DEVICE,
-    NET_PROTO_TYPE_DEL_DEVICE,
-    NET_PROTO_TYPE_COORDINATION,
-    NET_PROTO_TYPE_USER_DATA,
-    NET_PROTO_TYPE_ACK
+    NET_PROTO_TYPE_SEARCH       = 0x01,
+    NET_PROTO_TYPE_REPORT_INFO  = 0x02,
+    NET_PROTO_TYPE_ADD_DEVICE   = 0x03,
+    NET_PROTO_TYPE_DEL_DEVICE   = 0x04,
+    NET_PROTO_TYPE_COORDINATION = 0x05,
+    NET_PROTO_TYPE_USER_DATA    = 0x06,
+    NET_PROTO_TYPE_ACK          = 0x07,
 }NetProtocolType_t;
 
 typedef struct SleepDevDataCache_st
@@ -36,21 +36,21 @@ static NetEventHandle_cb g_netEventHandle = NULL;
 static SleepDevDataCache_t g_sleepDevDataCache;
 static uint8_t g_sleepCacheCount = 0;
 
-static void netEnDecrypt(uint8_t addr, uint8_t *input, uint8_t len)
+static int8_t netEnDecrypt(uint8_t addr, uint8_t *input, uint8_t len)
 {
     DMDevicesInfo_t *info = DMDeviceAddressFind(addr);
 
     if(info == NULL)
     {
         SysErrLog("key not found!!!");
-        return;
+        return -1;
     }
     
 #if 0
     input = input;
 #else
     uint8_t i;
-    uint8_t netKey = ~(info->netInfo.key + NET_CRYPTION_OFFSET);
+    uint8_t netKey = info->netInfo.key;// ~(info->netInfo.key + NET_CRYPTION_OFFSET);
     uint8_t value;
     
     for(i = 0; i < len; i++)
@@ -59,6 +59,7 @@ static void netEnDecrypt(uint8_t addr, uint8_t *input, uint8_t len)
         input[i] = value;
     }
 #endif
+    return 0;
 }
 
 static void netThrowEvent(NetEventType_t event, uint32_t from, void *args)
@@ -128,20 +129,22 @@ static void findCacheAndSend(uint8_t addr)
 static void netOperateFrameHandle(uint8_t srcAddr, bool isSleep, bool isBroadcast, uint8_t *data, uint8_t len)
 {
     uint8_t i = 0;
-    uint8_t type = data[0];
     uint8_t *optData = &data[1];
 
     if(!isBroadcast)
     {
-        netEnDecrypt(srcAddr, data, len);
+        if(netEnDecrypt(srcAddr, data, len) < 0)
+        {
+            return;
+        }
     }
     
     if(isSleep)
     {
         findCacheAndSend(srcAddr);
     }
-
-    switch(type)
+    
+    switch(data[0]) //type
     {
     case NET_PROTO_TYPE_DEL_DEVICE:
         netThrowEvent(NET_EVENT_DEV_DEL, srcAddr, NULL);
@@ -154,6 +157,7 @@ static void netOperateFrameHandle(uint8_t srcAddr, bool isSleep, bool isBroadcas
             ordinationDev.uid = SysMacToUid(&optData[i]);
             i += PHY_MAC_LEN;
             memcpy(ordinationDev.devType, &optData[i], NET_DEV_TYPE_LEN);
+            i += NET_DEV_TYPE_LEN;
             ordinationDev.sleep = optData[i++];
             ordinationDev.key = optData[i++];
             netThrowEvent(NET_EVENT_COORDINATION, srcAddr, &ordinationDev);
@@ -261,13 +265,18 @@ void NetBuildStop(uint8_t workCh)
 void NetUserDataSend(uint8_t to, bool isSleep, uint8_t *data, uint8_t len)
 {
     uint8_t usrData[255];
+    
     usrData[0] = NET_PROTO_TYPE_USER_DATA;
     memcpy(&usrData[1], data, len);
 
-    netEnDecrypt(to, data, len + 1);
+    if(to != NET_BROADCAST_NET_ADDR)
+    {
+        netEnDecrypt(to, usrData, len + 1);
+    }
+    
     if(isSleep) //发往的设备休眠属性
     {
-        netSleepDevDataSave(to, data, len + 1); //若为休眠设备，先缓存，等设备唤醒时再发送
+        netSleepDevDataSave(to, usrData, len + 1); //若为休眠设备，先缓存，等设备唤醒时再发送
     }
     else
     {
@@ -275,7 +284,7 @@ void NetUserDataSend(uint8_t to, bool isSleep, uint8_t *data, uint8_t len)
     }
 }
 
-void NetCoordinationOperate(uint8_t to, NetCoordinationDev_t *cooDev)
+void NetCoordinationOperate(uint8_t to, bool sleep, NetCoordinationDev_t *cooDev)
 {
     uint8_t data[32], i = 0;
 
@@ -288,10 +297,10 @@ void NetCoordinationOperate(uint8_t to, NetCoordinationDev_t *cooDev)
     i += NET_DEV_TYPE_LEN;
     data[i++] = cooDev->sleep;
     data[i++] = cooDev->key;
-    
+
     netEnDecrypt(to, data, i);
     
-    if(cooDev->sleep)
+    if(sleep)
     {
         netSleepDevDataSave(to, data, i);
     }

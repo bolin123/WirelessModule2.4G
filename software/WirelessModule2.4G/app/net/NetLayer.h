@@ -80,7 +80,7 @@ typedef void(*NetEventHandle_cb)(NetEventType_t event, uint32_t from, void *args
 //master module interface
 void NetbuildSearchDevice(const uint8_t myType[NET_DEV_TYPE_LEN]);
 void NetbuildAddDevice(uint32_t uid, NetbuildAddSubInfo_t *subInfo);
-void NetCoordinationOperate(uint8_t to, NetCoordinationDev_t *cooDev);
+void NetCoordinationOperate(uint8_t to, bool sleep, NetCoordinationDev_t *cooDev);
 void NetbuildDelDevice(uint8_t addr, bool isSleep);
 
 //slave module interface

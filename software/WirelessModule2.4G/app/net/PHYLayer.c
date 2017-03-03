@@ -106,14 +106,14 @@ static void lowLevelDataSend(const uint8_t *data, uint8_t len)
     uint8_t count = len / RX_PLOAD_WIDTH;
     uint8_t last = len % RX_PLOAD_WIDTH;
     uint8_t buff[RX_PLOAD_WIDTH];
-
+#if 0
     HalPrintf("Send:");
     for(i = 0; i < len; i++)
     {
         HalPrintf("%02x ", data[i]);
     }
     HalPrintf("\n");
-    
+#endif    
     NRF24L01ModeSet(NRF24L01SendMode, g_phyRfChannel);
     for(i = 0; i < count; i++)
     {
@@ -263,7 +263,7 @@ void PHYPacketRecvHandle(uint8_t *data, uint8_t len)
         }
     }
     
-#if 1
+#if 0
     HalPrintf("Recv:");
     for(i = 0; i < len; i++)
     {

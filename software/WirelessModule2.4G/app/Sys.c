@@ -2,6 +2,7 @@
 #include "SysTimer.h"
 #include "WirelessModule.h"
 #include "MProto.h"
+//#include "testWM.h"
 
 //xorshiftËæ»úÊýËã·¨
 uint32_t x = 123456789UL, y = 567819012UL, z = 321456780UL, w = 1234UL;
@@ -64,10 +65,12 @@ void SysInitialize(void)
     HalInitialize();
     SysTimerInitialize();
     MProtoInitialize();
+    //testWMInit();
 }
 
 void SysPoll(void)
 {
+    //testWMPoll();
     MProtoPoll();
     HalPoll();
     SysTimerPoll();

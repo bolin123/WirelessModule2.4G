@@ -4,7 +4,7 @@
 
 #define DEV_MASTER  0
 
-#define SLAVE_TYPE "SLV203"
+#define SLAVE_TYPE "SLV201"
 #define MASTER_TYPE "MST001"
 #define STATUS_LED_PIN 0x11  //PB1
 
@@ -58,6 +58,7 @@ static void testEventHandle(WMEvent_t event, void *args)
     
     if(WM_EVENT_SEARCH_END == event)
     {
+    #if 0
         num = WMGetSearchResult(result);
         if(num > 0)
         {
@@ -70,6 +71,7 @@ static void testEventHandle(WMEvent_t event, void *args)
             }
             WMNetBuildAddDevice(devNum, num);
         }
+    #endif
     }
     else if(WM_EVENT_NET_STATUS_CHANGE == event)
     {
@@ -87,6 +89,10 @@ static void testEventHandle(WMEvent_t event, void *args)
             HalGPIOSet(STATUS_LED_PIN, HAL_GPIO_LEVEL_LOW);
         }
     }
+    else if(WM_EVENT_RECV_SEARCH == event)
+    {
+        
+    }
     
 }
 
@@ -94,17 +100,18 @@ void testWMInit(void)
 {
     HalGPIOInit(STATUS_LED_PIN, HAL_GPIO_DIR_OUT);
     HalGPIOSet(STATUS_LED_PIN, HAL_GPIO_LEVEL_HIGH);
+    WMInitialize();
+    WMEventRegister(testEventHandle);
 #if DEV_MASTER
     WMSetMasterSlaveMode(true);
     WMSetSleepMode(0);
     WMSetModuleType(MASTER_TYPE);
 #else
     WMSetMasterSlaveMode(false);
-    WMSetSleepMode(0);
+    WMSetSleepMode(1);
     WMSetModuleType(SLAVE_TYPE);
     WMNetBuildStart(1);
 #endif
-    WMEventRegister(testEventHandle);
 }
 
 void testWMPoll(void)
@@ -114,5 +121,6 @@ void testWMPoll(void)
 #else
     slavePoll();
 #endif
+    WMPoll();
 }
 

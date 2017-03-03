@@ -16,7 +16,6 @@ typedef enum
 //设备网络信息，需要存储
 typedef struct
 {
-//    uint8_t addr;
     uint8_t sleep;
     uint8_t devType[NET_DEV_TYPE_LEN];
     uint8_t key;
@@ -32,6 +31,7 @@ typedef struct
     struct
     {
         bool isOnline;
+        SysTime_t hbInterval;
         SysTime_t lastHBTime;
     }hbInfo;
 }DMDevicesInfo_t;
@@ -43,6 +43,7 @@ uint8_t DMGetRelatedDeviceType(uint8_t *contents);
 
 void DMDeviceDel(DMDevicesInfo_t *device);
 void DMDeviceInfoClear(void);
+void DMMasterDeviceSet(uint8_t key, uint32_t uid, uint8_t *type, SysTime_t hbTime);
 void DMDeviceSet(uint8_t addr, uint8_t key, uint32_t uid, uint8_t *type, bool sleep);
 uint8_t DMDeviceCreate(bool sleep, uint8_t key, uint32_t uid, uint8_t *type);
 uint8_t DMDeviceUidToAddress(uint32_t uid);
