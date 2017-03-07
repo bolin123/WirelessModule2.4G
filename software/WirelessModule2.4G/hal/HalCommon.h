@@ -1,7 +1,7 @@
 #ifndef HAL_H
 #define HAL_H
 
-#include "HalCtype.h"
+#include "Sys.h"
 
 void HalInitialize(void);
 void HalPoll(void);
@@ -29,6 +29,10 @@ uint32_t HalRunningTime(void);
 
 /** Œ¢√Î—” ± */
 void HalDelayUs(uint16_t us);
+
+void HalEntrySleep(void);
+void HalWakeup(void);
+void HalStatusLedSet(uint8_t blinkCount);
 
 #endif // HAL_H
 

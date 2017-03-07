@@ -121,6 +121,7 @@ void HalClkInit(void)
     
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE); 
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
 
 }
 

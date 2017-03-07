@@ -28,8 +28,8 @@ typedef struct{
 }halUartConfig_t;
 
 //static halUartConfig_t g_uartConfig[UART_MAX_NUM];
-static uint8_t *g_dmaBuffer;
-static uint16_t g_dmaBufferSize = 0;
+//static uint8_t *g_dmaBuffer;
+//static uint16_t g_dmaBufferSize = 0;
 
 static void NVIC_USART_Configuration(uint8_t irqChannel, uint8_t priority)
 {
@@ -205,13 +205,13 @@ ROM_FUNC void HalUartPoll(void)
 
 }
 
-extern void MProtoRecvByte(uint8_t byte);
+extern void SysUartRecvHandle(uint8_t byte);
 
 static void HalUartDataCallback(HalUart_t uart, uint8_t data)
 {
     if(uart == HAL_UART_1)
     {
-        MProtoRecvByte(data);
+        SysUartRecvHandle(data);
     }
 }
 
