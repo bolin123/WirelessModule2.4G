@@ -28,4 +28,5 @@
 .\objects\phylayer.o: ..\..\hal\HalWdt.h
 .\objects\phylayer.o: ..\..\app\Sys.h
 .\objects\phylayer.o: ..\..\hal\HalCommon.h
+.\objects\phylayer.o: ..\..\app\Sys.h
 .\objects\phylayer.o: ..\..\app\VTList.h

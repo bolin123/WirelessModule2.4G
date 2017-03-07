@@ -30,3 +30,5 @@
 .\objects\testwm.o: ..\..\app\net\NetLayer.h
 .\objects\testwm.o: ..\..\app\net\PHYLayer.h
 .\objects\testwm.o: ..\..\app\net\NRF24L01P\NRF24L01.h
+.\objects\testwm.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_pwr.h
+.\objects\testwm.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_syscfg.h

@@ -25,9 +25,11 @@
 .\objects\wirelessmodule.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h
 .\objects\wirelessmodule.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h
 .\objects\wirelessmodule.o: ..\..\hal\HalCommon.h
+.\objects\wirelessmodule.o: ..\..\app\Sys.h
 .\objects\wirelessmodule.o: ..\..\app\net\NetLayer.h
 .\objects\wirelessmodule.o: ..\..\app\net\PHYLayer.h
 .\objects\wirelessmodule.o: ..\..\app\net\NRF24L01P\NRF24L01.h
 .\objects\wirelessmodule.o: ..\..\app\SysTimer.h
 .\objects\wirelessmodule.o: ..\..\app\DevicesManager.h
+.\objects\wirelessmodule.o: ..\..\app\PowerManager.h
 .\objects\wirelessmodule.o: ..\..\hal\HalFlash.h

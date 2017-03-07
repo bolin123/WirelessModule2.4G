@@ -25,3 +25,5 @@
 .\objects\haluart.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h
 .\objects\haluart.o: ..\..\hal\HalGPIO.h
 .\objects\haluart.o: ..\..\hal\HalCommon.h
+.\objects\haluart.o: ..\..\app\Sys.h
+.\objects\haluart.o: ..\..\hal\HalCommon.h

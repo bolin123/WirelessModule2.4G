@@ -1,5 +1,5 @@
----- WMEventReport_cb Matches (4 in 2 files) ----
-WirelessModule.c (app):static WMEventReport_cb g_eventHandle = NULL;
-WirelessModule.c (app):void WMEventRegister(WMEventReport_cb eventHandle)
-WirelessModule.h (app):typedef void(*WMEventReport_cb)(WMEvent_t event, void *args);
-WirelessModule.h (app):void WMEventRegister(WMEventReport_cb eventHandle);
+---- SYS_DEVICE_MAC_ADDR Matches (4 in 2 files) ----
+Sys.h (app):#define SYS_DEVICE_MAC_ADDR      (0x8000000 + 0xF800)  //62k
+WirelessModule.c (app):    HalFlashErase(SYS_DEVICE_MAC_ADDR);
+WirelessModule.c (app):    HalFlashWrite(SYS_DEVICE_MAC_ADDR, mac, NET_MAC_ADDR_LEN);
+WirelessModule.c (app):    HalFlashRead(SYS_DEVICE_MAC_ADDR, mac, NET_MAC_ADDR_LEN);

@@ -24,3 +24,4 @@
 .\objects\main.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h
 .\objects\main.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h
 .\objects\main.o: ..\..\hal\HalCommon.h
+.\objects\main.o: ..\..\app\Sys.h

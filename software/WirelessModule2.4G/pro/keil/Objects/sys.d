@@ -24,9 +24,12 @@
 .\objects\sys.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h
 .\objects\sys.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h
 .\objects\sys.o: ..\..\hal\HalCommon.h
+.\objects\sys.o: ..\..\app\Sys.h
 .\objects\sys.o: ..\..\app\SysTimer.h
 .\objects\sys.o: ..\..\app\WirelessModule.h
 .\objects\sys.o: ..\..\app\net\NetLayer.h
 .\objects\sys.o: ..\..\app\net\PHYLayer.h
 .\objects\sys.o: ..\..\app\net\NRF24L01P\NRF24L01.h
 .\objects\sys.o: ..\..\app\MProto.h
+.\objects\sys.o: ..\..\app\Manufacture.h
+.\objects\sys.o: ..\..\hal\HalFlash.h

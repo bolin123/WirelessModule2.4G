@@ -25,3 +25,4 @@
 .\objects\systimer.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h
 .\objects\systimer.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h
 .\objects\systimer.o: ..\..\hal\HalCommon.h
+.\objects\systimer.o: ..\..\app\Sys.h

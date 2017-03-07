@@ -25,6 +25,7 @@
 .\objects\devicesmanager.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h
 .\objects\devicesmanager.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h
 .\objects\devicesmanager.o: ..\..\hal\HalCommon.h
+.\objects\devicesmanager.o: ..\..\app\Sys.h
 .\objects\devicesmanager.o: ..\..\app\net\NetLayer.h
 .\objects\devicesmanager.o: ..\..\app\net\PHYLayer.h
 .\objects\devicesmanager.o: ..\..\app\net\NRF24L01P\NRF24L01.h

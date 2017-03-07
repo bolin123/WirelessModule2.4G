@@ -28,4 +28,6 @@
 .\objects\nrf24l01.o: ..\..\hal\HalWait.h
 .\objects\nrf24l01.o: ..\..\hal\HalWdt.h
 .\objects\nrf24l01.o: ..\..\hal\HalCommon.h
+.\objects\nrf24l01.o: ..\..\app\Sys.h
+.\objects\nrf24l01.o: ..\..\hal\HalCommon.h
 .\objects\nrf24l01.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_syscfg.h

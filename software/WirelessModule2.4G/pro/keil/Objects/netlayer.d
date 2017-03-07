@@ -27,6 +27,7 @@
 .\objects\netlayer.o: ..\..\app\net\NRF24L01P\NRF24L01.h
 .\objects\netlayer.o: ..\..\app\Sys.h
 .\objects\netlayer.o: ..\..\hal\HalCommon.h
+.\objects\netlayer.o: ..\..\app\Sys.h
 .\objects\netlayer.o: ..\..\app\SysTimer.h
 .\objects\netlayer.o: ..\..\app\DevicesManager.h
 .\objects\netlayer.o: ..\..\app\VTList.h

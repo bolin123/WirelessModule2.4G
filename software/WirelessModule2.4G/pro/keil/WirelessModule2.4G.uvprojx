@@ -429,14 +429,24 @@
               <FilePath>..\..\app\WirelessModule.c</FilePath>
             </File>
             <File>
-              <FileName>testWM.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\app\testWM.c</FilePath>
-            </File>
-            <File>
               <FileName>DevicesManager.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\app\DevicesManager.c</FilePath>
+            </File>
+            <File>
+              <FileName>MProto.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\app\MProto.c</FilePath>
+            </File>
+            <File>
+              <FileName>PowerManager.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\app\PowerManager.c</FilePath>
+            </File>
+            <File>
+              <FileName>Manufacture.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\app\Manufacture.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -487,6 +497,11 @@
               <FileName>HalWdt.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\hal\HalWdt.c</FilePath>
+            </File>
+            <File>
+              <FileName>HalPower.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\hal\HalPower.c</FilePath>
             </File>
           </Files>
         </Group>
