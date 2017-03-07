@@ -17,13 +17,13 @@ typedef enum
 void NRF24L01Initialize(void);
 void NRF24L01Poll(void);
 bool NRF24L01Check(void);
-void NRF24L01SetSleepMode(bool sleep);
 bool NRF24L01DataRecved(void);
 uint8_t NRF24L01TxPacket(const uint8_t *txbuf, uint8_t len);
 uint8_t NRF24L01RxPacket(uint8_t *rxbuf);
 void NRF24L01ModeSet(NRF24L01Mode_t mode, uint8_t chn);
 uint8_t NRF24L01GetStatus(void);
 void NRF24l01Shutdown(void);
+void NRF24L01Sleep(bool sleep);
 
 #endif
 

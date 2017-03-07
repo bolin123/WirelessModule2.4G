@@ -106,8 +106,8 @@ static void lowLevelDataSend(const uint8_t *data, uint8_t len)
     uint8_t count = len / RX_PLOAD_WIDTH;
     uint8_t last = len % RX_PLOAD_WIDTH;
     uint8_t buff[RX_PLOAD_WIDTH];
-#if 0
-    HalPrintf("Send:");
+#if 1
+    HalPrintf("Net Send:");
     for(i = 0; i < len; i++)
     {
         HalPrintf("%02x ", data[i]);
@@ -263,8 +263,8 @@ void PHYPacketRecvHandle(uint8_t *data, uint8_t len)
         }
     }
     
-#if 0
-    HalPrintf("Recv:");
+#if 1
+    HalPrintf("Net Recv:");
     for(i = 0; i < len; i++)
     {
         HalPrintf("%02x ", data[i]);
@@ -373,6 +373,15 @@ static void phyRecvDataHandle(void)
     }
 }
 
+bool PHYSendListEmpty(void)
+{
+    if(VTListFirst(&g_phySendList) != NULL)
+    {
+        return false;
+    }
+    return true;
+}
+
 /*心跳帧发送函数
 * dstAddr:目标地址, isSleep:本设备是否休眠设备
 */
@@ -466,9 +475,9 @@ void PHYPacketHandleCallbackRegiste(PHYOptHandle_cb optCb,
     g_heartbeatHandle = hbCb;
 }
 
-void PHYSetSleepMode(bool sleep)
+void PHYPowerSet(bool sleep)
 {
-    NRF24L01SetSleepMode(sleep);
+    NRF24L01Sleep(sleep);
 }
 
 void PHYInitialize(void)

@@ -31,10 +31,31 @@ static void masterPoll(void)
 */
 #endif
 }
-
+#include "stm32f0xx_pwr.h"
 static void slavePoll(void)
 {
     static SysTime_t lastTime;
+    static SysTime_t sleepTime;
+    static bool firstSleep = true;
+    uint8_t data[20] = {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0};
+    
+    if(SysTimeHasPast(lastTime, 2000))
+    {
+        SysLog("send data\n");
+        WMNetUserDataSend(NET_BROADCAST_NET_ADDR, data, sizeof(data));
+        lastTime = SysTime();
+    }
+    if(firstSleep && SysTimeHasPast(sleepTime, 10000))
+    {
+        firstSleep = false;
+        lastTime = SysTime();
+        HalGPIOSet(STATUS_LED_PIN, HAL_GPIO_LEVEL_HIGH);
+        SysLog("sleeeeeeep....\n");
+        NetLayerSleep(true);
+        PWR_EnterSTOPMode(PWR_Regulator_LowPower, PWR_STOPEntry_WFI);
+    }
+#if 0
+    
     static uint8_t count = 0;
     uint8_t data[20] = {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0};
     
@@ -46,6 +67,7 @@ static void slavePoll(void)
         lastTime = SysTime();
         count++;
     }
+    #endif
 }
 
 static void testEventHandle(WMEvent_t event, void *args)
@@ -95,11 +117,45 @@ static void testEventHandle(WMEvent_t event, void *args)
     }
     
 }
+extern void HalClkInit(void);
+void EXTI0_1_IRQHandler(void)
+{
+    if(EXTI_GetITStatus(EXTI_Line0) != RESET)  
+    {
+        HalClkInit();
+        SysPrintf("PA0 Pin IRQ...\n");
+        NetLayerSleep(false);
+        HalGPIOSet(STATUS_LED_PIN, HAL_GPIO_LEVEL_LOW);
+        EXTI_ClearITPendingBit(EXTI_Line0);
+    }
+}
+#include "stm32f0xx_syscfg.h"
+static void irqInit(void)
+{
+    EXTI_InitTypeDef EXTI_InitStructure;  
+    NVIC_InitTypeDef NVIC_InitStructure;  
+
+    HalGPIOInit(0x00, HAL_GPIO_DIR_IN);
+        
+    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA, EXTI_PinSource0);
+    
+    EXTI_InitStructure.EXTI_Line = EXTI_Line0;    //设置引脚  
+    EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt; //设置为外部中断模式  
+    EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;  // 设置上升和下降沿都检测  
+    EXTI_InitStructure.EXTI_LineCmd = ENABLE;                //使能外部中断新状态  
+    EXTI_Init(&EXTI_InitStructure); 
+    
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;                //使能外部中断通道     
+    NVIC_InitStructure.NVIC_IRQChannel = EXTI0_1_IRQn;  
+    NVIC_InitStructure.NVIC_IRQChannelPriority = 0x00;         //先占优先级4位,共16级  
+    NVIC_Init(&NVIC_InitStructure);   //根据NVIC_InitStruct中指定的参数初始化外设NVIC寄存器  
+}
 
 void testWMInit(void)
 {
     HalGPIOInit(STATUS_LED_PIN, HAL_GPIO_DIR_OUT);
-    HalGPIOSet(STATUS_LED_PIN, HAL_GPIO_LEVEL_HIGH);
+    HalGPIOSet(STATUS_LED_PIN, HAL_GPIO_LEVEL_LOW);
+    irqInit();
     WMInitialize();
     WMEventRegister(testEventHandle);
 #if DEV_MASTER

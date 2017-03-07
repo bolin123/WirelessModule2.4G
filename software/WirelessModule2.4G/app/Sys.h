@@ -18,12 +18,14 @@ typedef uint32_t SysTime_t;
 #define SYS_ENTER_CRITICAL(istate) //istate = HalInterruptsGetEnable();HalInterruptsSetEnable(0);
 #define SYS_EXIT_CRITICAL(istate) //HalInterruptsSetEnable(istate);
 
-uint32_t SysRandom(void);
+uint8_t *SysGetVersion(void);
 void SysRandomSeed(uint32_t seed);
+uint32_t SysRandom(void);
 
 uint32_t SysMacToUid(const uint8_t *mac);
+uint8_t *SysGetMacAddr(uint8_t *mac);
+void SysSetMacAddr(uint8_t *mac);
 const uint8_t *SysUidToMac(uint32_t uid);
-uint8_t *SysGetMacAddr(void);
 
 void SysReboot(void);
 void SysInitialize(void);

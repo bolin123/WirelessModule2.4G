@@ -409,6 +409,9 @@ static void mprotoEventHandle(WMEvent_t event, void *args)
                 mprotoFrameSend(MPROTO_FRAME_TYPE_USER_DATA, true, data, num);
             }
             break;
+        case WM_EVENT_DELETED:
+            mprotoFrameSend(MPROTO_FRAME_TYPE_DEL_DEVICE, true, NULL, 0);
+            break;
         default:
             break;
     }
@@ -420,6 +423,11 @@ static void commPortInit(void)
     uartConfig.baudRate = 9600;
     uartConfig.parity = PARITY_NONE;
     HalUartInit(HAL_UART_1, &uartConfig);
+}
+
+bool MProtoGotDeviceInfo(void)
+{
+    return g_gotDeviceInfo;
 }
 
 void MProtoInitialize(void)

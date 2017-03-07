@@ -1,6 +1,7 @@
 #include "WirelessModule.h"
 #include "SysTimer.h"
 #include "DevicesManager.h"
+#include "PowerManager.h"
 #include "HalFlash.h"
 
 #define WM_DEVICES_NUM_MAX 32
@@ -78,9 +79,11 @@ static void delayStartHeartbeat(void *args)
 
 static void subDevHeartbeat(void)
 {
-    if(g_netStatus == WM_STATUS_NET_BUILDED && g_mode == WM_MS_MODE_SLAVE)
+    if(g_netStatus == WM_STATUS_NET_BUILDED 
+        && g_mode == WM_MS_MODE_SLAVE
+        && g_isSleepDevice == false) //休眠设备被唤醒时发送一次心跳，不再定时发送
     {
-        if(g_lastHbTime ==0 || SysTimeHasPast(g_lastHbTime, g_hbIntervalTime))
+        if(g_lastHbTime == 0 || SysTimeHasPast(g_lastHbTime, g_hbIntervalTime))
         {
             SysLog("");
             NetSendHeartbeat(WM_MASTER_NET_ADDR);
@@ -123,8 +126,27 @@ static void searchDeviceInfoClear(void)
 /*组网状态设置*/
 static void netBuildStatusSet(WMNetStatus_t status)
 {
+    uint8_t blink = 1;
+    
     if(g_netStatus != status)
     {
+        /*设置状态LED闪烁的次数*/
+        switch(status)
+        {
+            case WM_STATUS_NET_IDLE:
+                blink = 3;
+                break;
+            case WM_STATUS_NET_BUILDING:
+                blink = 2;
+                break;
+            case WM_STATUS_NET_BUILDED:
+                blink = 1;
+                break;
+            default:
+                break;
+        }
+        HalStatusLedSet(blink); 
+        
         if(g_eventHandle != NULL)
         {
             g_eventHandle(WM_EVENT_NET_STATUS_CHANGE, (void *)status);
@@ -200,6 +222,13 @@ static void dmEventHandle(uint8_t addr, DMEvent_t event)
     }
 }
 
+static void wmSearchResultHandle(uint32_t uid, NetbuildSubDeviceInfo_t *devInfo)
+{
+    SysLog("subDev type:%c%c%c%c%c%c, sleep:%d, uid:%x", devInfo->type[0], devInfo->type[1], \
+        devInfo->type[2], devInfo->type[3], devInfo->type[4], devInfo->type[5], devInfo->sleep, uid);
+    searchDeviceInfoAdd(uid, devInfo->type, devInfo->sleep);
+}
+
 static void wmNetlayerEventHandle(NetEventType_t event, uint32_t from, void *args)
 {
     if(!needHandleTheEvent(event))
@@ -221,6 +250,7 @@ static void wmNetlayerEventHandle(NetEventType_t event, uint32_t from, void *arg
             SysTimerSet(delayReportDeviceInfo, delayTime, 0, (void *)from);
         }
         break;
+    #if 0
     case NET_EVENT_DEV_INFO: //从设备上报的设备信息
         {
             NetbuildSubDeviceInfo_t *devInfo = (NetbuildSubDeviceInfo_t *)args;
@@ -229,6 +259,7 @@ static void wmNetlayerEventHandle(NetEventType_t event, uint32_t from, void *arg
             searchDeviceInfoAdd(from, devInfo->type, devInfo->sleep);
         }
         break;
+    #endif
     case NET_EVENT_DEV_ADD: //主设备添加消息
         {
             uint16_t hbtime;
@@ -253,6 +284,10 @@ static void wmNetlayerEventHandle(NetEventType_t event, uint32_t from, void *arg
         SysLog("NET_EVENT_DEV_DEL !");
         memset(&g_netbuildInfo, 0xff, sizeof(WMNetbuildInfo_t));
         updateNetInfoAndSwitchChannel(true);
+        if(g_eventHandle != NULL)
+        {
+            g_eventHandle(WM_EVENT_DELETED, NULL);
+        }
         netBuildStatusSet(WM_STATUS_NET_IDLE);
         break;
     case NET_EVENT_COORDINATION:
@@ -487,8 +522,20 @@ int8_t WMNetBuildAddDevice(uint8_t *id, uint8_t num)
 
 static void searchDeviceAgain(void *args)
 {
-    NetbuildSearchDevice(g_myDevType);
+    NetbuildSearchDevice(g_myDevType, wmSearchResultHandle);
     SysTimerSet(netBuildDone, 1000, 0, (void *)WM_EVENT_SEARCH_END);
+}
+
+void WMWakeupHandle(void)
+{
+    if(g_isSleepDevice)
+    {
+        PMWakeUp();
+        if(WMGetNetStatus() == WM_STATUS_NET_BUILDED)
+        {
+            NetSendHeartbeat(WM_MASTER_NET_ADDR); //send heartbeat
+        }
+    }
 }
 
 int8_t WMNetBuildSearch(void)
@@ -508,9 +555,9 @@ int8_t WMNetBuildSearch(void)
             SysRandomSeed(SysTime());
             g_netbuildInfo.rfChannel = NET_WORK_START_CH + (SysRandom() % 30);
         }
-        searchDeviceInfoClear();
+        searchDeviceInfoClear(); //清除缓存
         NetBuildStart();
-        NetbuildSearchDevice(g_myDevType);
+        NetbuildSearchDevice(g_myDevType, wmSearchResultHandle);
         SysTimerSet(searchDeviceAgain, 1000, 0, NULL);
         return 0;
     }
@@ -647,17 +694,20 @@ void WMEventRegister(WMEventReport_cb eventHandle)
 void WMInitialize(void)
 {
     uint8_t mac[NET_MAC_ADDR_LEN] = {0x22, 0x02, 0x03, 0x10};
+    PMInitialize();
     NetLayerInit();
     NetLayerEventRegister(wmNetlayerEventHandle);
 #if 0
-    HalFlashErase(SYS_DEVICE_MAC_ADDR);
-    HalFlashWrite(SYS_DEVICE_MAC_ADDR, mac, NET_MAC_ADDR_LEN);
+    SysSetMacAddr(mac);
 #endif    
-    HalFlashRead(SYS_DEVICE_MAC_ADDR, mac, NET_MAC_ADDR_LEN);
+    //HalFlashRead(SYS_DEVICE_MAC_ADDR, mac, NET_MAC_ADDR_LEN);
+    SysGetMacAddr(mac);
     NetSetMacAddr(mac);
 
     DMInitialize();
     DMEventRegister(dmEventHandle);
+
+    HalStatusLedSet(3); //默认未配网
 
 #if 0
     WMNetbuildInfo_t info;
@@ -679,7 +729,6 @@ void WMInitialize(void)
         netBuildStatusSet(WM_STATUS_NET_BUILDED);
         updateNetInfoAndSwitchChannel(false);
     }
-    
 }
 
 void WMPoll(void)
@@ -687,5 +736,9 @@ void WMPoll(void)
     NetLayerPoll();
     subDevHeartbeat();
     DMPoll();
+    if(g_isSleepDevice)
+    {
+        PMPoll();
+    }
 }
 

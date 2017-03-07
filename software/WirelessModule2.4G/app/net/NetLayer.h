@@ -24,6 +24,7 @@
 //    NET_MODE_MASTER,
 //}NetMode_t;
 
+
 typedef enum
 {
     NET_EVENT_SEARCH = 0,   //搜索设备
@@ -41,6 +42,7 @@ typedef struct
     uint8_t type[NET_DEV_TYPE_LEN];
     uint8_t sleep;
 }NetbuildSubDeviceInfo_t;
+typedef void (* NetSearchInfoHandle_cb)(uint32_t uid, NetbuildSubDeviceInfo_t *result); //搜索结果回调函数
 
 /*组网添加设备信息*/
 typedef struct
@@ -78,7 +80,7 @@ typedef struct
 typedef void(*NetEventHandle_cb)(NetEventType_t event, uint32_t from, void *args);
 
 //master module interface
-void NetbuildSearchDevice(const uint8_t myType[NET_DEV_TYPE_LEN]);
+void NetbuildSearchDevice(const uint8_t myType[NET_DEV_TYPE_LEN], NetSearchInfoHandle_cb searchHandle);
 void NetbuildAddDevice(uint32_t uid, NetbuildAddSubInfo_t *subInfo);
 void NetCoordinationOperate(uint8_t to, bool sleep, NetCoordinationDev_t *cooDev);
 void NetbuildDelDevice(uint8_t addr, bool isSleep);
@@ -101,7 +103,8 @@ void NetSetNetaddress(uint8_t addr);
 
 void NetBuildStart(void);
 void NetBuildStop(uint8_t workCh);
-void NetLayerSetSleepMode(bool sleep);
+void NetLayerSleep(bool sleep);
+bool NetSendListEmpty(void);
 
 void NetLayerInit(void);
 void NetLayerPoll(void);

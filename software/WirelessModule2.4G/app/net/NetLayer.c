@@ -35,6 +35,7 @@ static bool g_needSleep = false;
 static NetEventHandle_cb g_netEventHandle = NULL;
 static SleepDevDataCache_t g_sleepDevDataCache;
 static uint8_t g_sleepCacheCount = 0;
+static NetSearchInfoHandle_cb g_searchResultHandle = NULL;
 
 static int8_t netEnDecrypt(uint8_t addr, uint8_t *input, uint8_t len)
 {
@@ -221,7 +222,6 @@ void NetSendHeartbeat(uint8_t addr)
 
 static void netBuildFrameHandle(uint8_t srcMac[PHY_MAC_LEN], bool isBroadcast, uint8_t *data, uint8_t len)
 {
-//    uint8_t i = 0;
     uint8_t type = data[0];
     uint8_t *content = &data[1];
     uint32_t uid = SysMacToUid(srcMac);
@@ -237,7 +237,11 @@ static void netBuildFrameHandle(uint8_t srcMac[PHY_MAC_LEN], bool isBroadcast, u
             netThrowEvent(NET_EVENT_SEARCH, uid, (void *)content);
             break;
         case NET_PROTO_TYPE_REPORT_INFO:
-            netThrowEvent(NET_EVENT_DEV_INFO, uid, (void *)content);
+            //netThrowEvent(NET_EVENT_DEV_INFO, uid, (void *)content);
+            if(g_searchResultHandle != NULL)
+            {
+                g_searchResultHandle(uid, (NetbuildSubDeviceInfo_t *)content);
+            }
             break;
         case NET_PROTO_TYPE_ADD_DEVICE:
             netThrowEvent(NET_EVENT_DEV_ADD, uid, (void *)content);
@@ -310,6 +314,11 @@ void NetCoordinationOperate(uint8_t to, bool sleep, NetCoordinationDev_t *cooDev
     }
 }
 
+bool NetSendListEmpty(void)
+{
+    return PHYSendListEmpty();
+}
+
 void NetSetSleepMode(bool needSleep)
 {
     SysLog("%d", needSleep);
@@ -339,13 +348,14 @@ uint8_t *NetGetMacAddr(uint8_t *mac)
 
 /***************************Build network**********************************/
 //master module interface
-void NetbuildSearchDevice(const uint8_t myType[NET_DEV_TYPE_LEN])
+void NetbuildSearchDevice(const uint8_t myType[NET_DEV_TYPE_LEN], NetSearchInfoHandle_cb searchHandle)
 {
     SysLog("");
     uint8_t data[NET_DEV_TYPE_LEN + 1];
     data[0] = NET_PROTO_TYPE_SEARCH;
     memcpy(&data[1], myType, NET_DEV_TYPE_LEN);
     PHYEstnetPacketSend(g_broadMac, (const uint8_t *)data, sizeof(data), false);
+    g_searchResultHandle = searchHandle;
 }
 
 void NetbuildAddDevice(uint32_t uid, NetbuildAddSubInfo_t *subInfo)
@@ -361,8 +371,8 @@ void NetbuildDelDevice(uint8_t addr, bool isSleep)
 {
     uint8_t data[1];
     
-    netEnDecrypt(addr, data, sizeof(data));
     data[0] = NET_PROTO_TYPE_DEL_DEVICE;
+    netEnDecrypt(addr, data, sizeof(data));
     if(isSleep) //–›√ﬂ…Ë±∏œ»ª∫¥Ê
     {
         netSleepDevDataSave(addr, data, sizeof(data));
@@ -386,14 +396,9 @@ void NetbuildSearchResponse(const uint8_t *devType, bool isSleep)
     PHYEstnetPacketSend(g_broadMac, data, sizeof(data), true);
 }
 
-void NetLayerSetSleepMode(bool sleep)
+void NetLayerSleep(bool sleep)
 {
-    if(sleep)
-    {
-    }
-    else
-    {
-    }
+    PHYPowerSet(sleep);
 }
 
 void NetLayerEventRegister(NetEventHandle_cb eventCb)

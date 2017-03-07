@@ -232,7 +232,7 @@ bool NRF24L01DataRecved(void)
 {
     return HalGPIOGet(NRF24L01_IRQ_PIN) == HAL_GPIO_LEVEL_LOW;
 }
-
+#if 0
 static void nrf24l01SetPinIRQ(void)
 {
     EXTI_InitTypeDef EXTI_InitStructure;  
@@ -251,14 +251,20 @@ static void nrf24l01SetPinIRQ(void)
     NVIC_InitStructure.NVIC_IRQChannelPriority = 0x00;         //先占优先级4位,共16级  
     NVIC_Init(&NVIC_InitStructure);   //根据NVIC_InitStruct中指定的参数初始化外设NVIC寄存器  
 }
+#endif
 
-void NRF24L01SetSleepMode(bool sleep)
+void NRF24L01Sleep(bool sleep)
 {
     if(sleep)
     {
+        NRF24l01Shutdown();
     }
     else
     {
+        NRF24L01_CE_LOW();
+        nrf24l01WriteReg(WRITE_REG+CONFIG, 0x0b);
+        NRF24L01_CE_HIGH();
+        hal_wait_ms(2);
     }
 }
 

@@ -19,6 +19,7 @@ typedef enum
     WM_EVENT_NET_STATUS_CHANGE, //状态改变
     WM_EVENT_COORDINATION, //协调通信
     WM_EVENT_USER_DATA,   //用户数据
+    WM_EVENT_DELETED,     //设备被删除
 }WMEvent_t;
 
 typedef enum
