@@ -3,6 +3,7 @@
 
 #include "Sys.h"
 
+void HalSetSleepPinStatus(bool sleep);
 bool HalPowerNeedSleep(void);
 void HalPowerSleep(void);
 void HalPowerWakeup(void);

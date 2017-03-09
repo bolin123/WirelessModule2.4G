@@ -30,6 +30,6 @@
 .\objects\sys.o: ..\..\app\net\NetLayer.h
 .\objects\sys.o: ..\..\app\net\PHYLayer.h
 .\objects\sys.o: ..\..\app\net\NRF24L01P\NRF24L01.h
-.\objects\sys.o: ..\..\app\MProto.h
 .\objects\sys.o: ..\..\app\Manufacture.h
 .\objects\sys.o: ..\..\hal\HalFlash.h
+.\objects\sys.o: ..\..\app\MProto.h

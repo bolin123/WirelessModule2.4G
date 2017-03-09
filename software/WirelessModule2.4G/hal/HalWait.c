@@ -35,7 +35,6 @@ void hal_wait(uint16_t utime, uint8_t type)
 	while(count < utime)
 	{
 		hal_wait_check(type);
-		HalIwdtFeed();
 	if((TIM1->SR)&TIM_IT_Update)
 	{
 		TIM_ClearITPendingBit(TIM1, TIM_IT_Update);

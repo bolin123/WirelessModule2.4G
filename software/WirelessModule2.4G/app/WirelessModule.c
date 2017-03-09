@@ -40,8 +40,19 @@ static WMSearchDeviceInfo_t g_searchDevInfo[WM_SEARCH_DEVICE_NUM]; //ËÑË÷µ½µÄÉè±
 static WMMasterSlaveMode_t g_mode = WM_MS_MODE_NONE;
 static bool g_onlineStatus = false;
 
+static uint32_t getRandomValue(uint32_t seed)
+{
+    SysRandomSeed(seed);
+    return SysRandom();
+}
+
 static bool needHandleTheEvent(NetEventType_t event)
 {
+    if(!SysGotDeviceInfo())
+    {
+        return false;
+    }
+    
     if(g_mode == WM_MS_MODE_MASTER)
     {
         if(event == NET_EVENT_SEARCH \
@@ -77,6 +88,7 @@ static void delayStartHeartbeat(void *args)
     g_lastHbTime = SysTime();
 }
 
+/*´ÓÉè±¸ÍøÂçÐÄÌø*/
 static void subDevHeartbeat(void)
 {
     if(g_netStatus == WM_STATUS_NET_BUILDED 
@@ -156,16 +168,22 @@ static void netBuildStatusSet(WMNetStatus_t status)
     g_netStatus = status;
 }
 
+/*ÍøÂç×´Ì¬
+* 0=¿ÕÏÐ
+* 1=ÕýÔÚ×éÍø
+* 2=ÒÑ×éÍø
+*/
 WMNetStatus_t WMGetNetStatus(void)
 {
     return g_netStatus;
 }
 
+/*±¾Éè±¸ÊÇ·ñÔÚÏß*/
 bool WMIsDeviceOnline(void)
 {
     if(g_mode == WM_MS_MODE_MASTER)
     {
-        return true;
+        return true; //Ö÷Éè±¸Ê¼ÖÕÔÚÏß
     }
     else
     {
@@ -177,7 +195,6 @@ static void netBuildDone(void *args)
 {
     WMEvent_t event = (WMEvent_t)((uint32_t)args);
     
-    //send search result
     SysLog("");
     netBuildStatusSet(WM_STATUS_NET_BUILDED);
     NetBuildStop(g_netbuildInfo.rfChannel);
@@ -188,6 +205,9 @@ static void netBuildDone(void *args)
     }
 }
 
+/*¸üÐÂ±¾Éè±¸µÄÅäÍøÐÅÏ¢
+* @needSave:ÊÇ·ñ´æ´¢
+*/
 static void updateNetInfoAndSwitchChannel(bool needSave)
 {
     NetSetSegaddress(g_netbuildInfo.segAddr); //Íø¶ÎµØÖ·ÎªÖ÷Éè±¸µÄMACµØÖ·
@@ -201,13 +221,17 @@ static void updateNetInfoAndSwitchChannel(bool needSave)
     }
 }
 
+/*Éè±¸ÉÏÏÂÏß´¦Àíº¯Êý*/
 static void dmEventHandle(uint8_t addr, DMEvent_t event)
 {
     SysLog("Dev address %d: %s", addr, event == DM_EVENT_ONLINE ? "online" : "offline");
 
-    if(addr == NET_MASTER_NET_ADDR) //´ÓÉè±¸½«ÐÞ¸Ä×ÔÉíµÄ×´Ì¬
+    if(g_mode == WM_MS_MODE_SLAVE)
     {
-        g_onlineStatus = (event == DM_EVENT_ONLINE ? true : false);
+        if(addr == NET_MASTER_NET_ADDR) //´ÓÉè±¸½«ÐÞ¸Ä×ÔÉíµÄ×´Ì¬
+        {
+            g_onlineStatus = (event == DM_EVENT_ONLINE ? true : false);
+        }
     }
     else
     {
@@ -222,6 +246,11 @@ static void dmEventHandle(uint8_t addr, DMEvent_t event)
     }
 }
 
+/*ËÑË÷»Øµ÷º¯Êý
+* @uid:Éè±¸µÄÎ¨Ò»Âë(ÓÉmac×ª»»)
+* @devInfo:´ÓÉè±¸ÐÅÏ¢
+* Ö»ÓÐËÑË÷µ½´ÓÉè±¸²Å»Øµ÷¸Ãº¯Êý
+*/
 static void wmSearchResultHandle(uint32_t uid, NetbuildSubDeviceInfo_t *devInfo)
 {
     SysLog("subDev type:%c%c%c%c%c%c, sleep:%d, uid:%x", devInfo->type[0], devInfo->type[1], \
@@ -229,6 +258,7 @@ static void wmSearchResultHandle(uint32_t uid, NetbuildSubDeviceInfo_t *devInfo)
     searchDeviceInfoAdd(uid, devInfo->type, devInfo->sleep);
 }
 
+/*ÍøÂçÊÂ¼þ´¦Àíº¯Êý*/
 static void wmNetlayerEventHandle(NetEventType_t event, uint32_t from, void *args)
 {
     if(!needHandleTheEvent(event))
@@ -245,8 +275,7 @@ static void wmNetlayerEventHandle(NetEventType_t event, uint32_t from, void *arg
             SysTime_t delayTime;
             SysLog("NET_EVENT_SEARCH: master %c%c%c%c%c%c", type[0], type[1], type[2], type[3], type[4], type[5]);
 
-            SysRandomSeed(SysTime());
-            delayTime = SysRandom() % 800; //Ëæ»úÑÓÊ± <800 ms£¬·ÀÖ¹ÓëÆäËû´ÓÉè±¸³åÍ»
+            delayTime = getRandomValue(SysTime()) % 800; //Ëæ»úÑÓÊ± <800 ms£¬·ÀÖ¹ÓëÆäËû´ÓÉè±¸³åÍ»
             SysTimerSet(delayReportDeviceInfo, delayTime, 0, (void *)from);
         }
         break;
@@ -354,6 +383,9 @@ static void wmNetlayerEventHandle(NetEventType_t event, uint32_t from, void *arg
     }
 }
 
+/*·¢ËÍÓÃ»§Êý¾Ý
+@to:Ä¿µÄµØÖ·£¬FFÎª¹ã²¥µØÖ·
+*/
 void WMNetUserDataSend(uint8_t to, uint8_t *data, uint8_t len)
 {
     DMDevicesInfo_t *info = NULL;
@@ -374,6 +406,9 @@ void WMNetUserDataSend(uint8_t to, uint8_t *data, uint8_t len)
     
 }
 
+/*²éÑ¯Éè±¸ÐÅÏ¢
+* @type:ÐÅÏ¢ÀàÐÍ(¹ØÁª¡¢ÔÚÏß)
+*/
 uint8_t WMQueryDeviceInfo(WMQueryType_t type, uint8_t *contents)
 {
     SysLog("type=%d", type);
@@ -387,6 +422,7 @@ uint8_t WMQueryDeviceInfo(WMQueryType_t type, uint8_t *contents)
     }
 }
 
+/*È¡ËÑË÷µ½µÄ´ÓÉè±¸ÐÅÏ¢*/
 uint8_t WMGetSearchResult(uint8_t *result)
 {
     uint8_t i, count = 0;
@@ -395,11 +431,6 @@ uint8_t WMGetSearchResult(uint8_t *result)
     {
         if(g_searchDevInfo[i].uid != 0)
         {
-            /*
-            result[i].sid = i;
-            result[i].sleep = g_searchDevInfo[i].sleep;
-            memcpy(result[i].type, g_searchDevInfo[i].type, NET_DEV_TYPE_LEN);
-            */
             result[i * sizeof(WMSearchResult_t)] = i;
             memcpy(&result[i * sizeof(WMSearchResult_t) + 1], g_searchDevInfo[i].type, NET_DEV_TYPE_LEN);
             result[i * sizeof(WMSearchResult_t) + NET_DEV_TYPE_LEN + 1] = g_searchDevInfo[i].sleep;
@@ -410,6 +441,7 @@ uint8_t WMGetSearchResult(uint8_t *result)
     return (count * sizeof(WMSearchResult_t));
 }
 
+/*´ÓÍøÂçÖÐÉ¾³ý´ÓÉè±¸*/
 int8_t WMNetBuildDelDevice(uint8_t *addr, uint8_t num)
 {
     int8_t ret = 0;
@@ -441,6 +473,7 @@ int8_t WMNetBuildDelDevice(uint8_t *addr, uint8_t num)
     return ret;
 }
 
+/*×éÍøÌí¼Ó´ÓÉè±¸*/
 int8_t WMNetBuildAddDevice(uint8_t *id, uint8_t num)
 {
     uint8_t i;
@@ -463,7 +496,7 @@ int8_t WMNetBuildAddDevice(uint8_t *id, uint8_t num)
     }
     
     netBuildStatusSet(WM_STATUS_NET_BUILDING);
-    NetBuildStart();
+    NetBuildStart();  //ÇÐ»»µ½×éÍøÐÅµÀ
     
     for(i = 0; i < num; i++)
     {
@@ -471,10 +504,9 @@ int8_t WMNetBuildAddDevice(uint8_t *id, uint8_t num)
         {
             searchInfo = &g_searchDevInfo[id[i]];
             subAddr = DMDeviceUidToAddress(searchInfo->uid); 
-            if(subAddr == DM_DEVICE_INVALID_FLAG)
+            if(subAddr == DM_DEVICE_INVALID_FLAG) //µÚÒ»´ÎÌí¼Ó
             {
-                SysRandomSeed(SysTime()); //Ëæ»úÊý²úÉú key
-                keyVal = (uint8_t)SysRandom();
+                keyVal = (uint8_t)getRandomValue(SysTime());//Ëæ»úÊý²úÉú ¼ÓÃÜkey
                 subAddr = DMDeviceCreate(searchInfo->sleep, keyVal, searchInfo->uid, searchInfo->type);
             }
             else //Ö®Ç°Ìí¼Ó¹ý£¬Ö±½ÓÓÃÔ­À´µÄkey
@@ -495,7 +527,7 @@ int8_t WMNetBuildAddDevice(uint8_t *id, uint8_t num)
             memcpy(subInfo.masterType, g_myDevType, NET_DEV_TYPE_LEN);
             address[i] = subAddr; //¼ÇÂ¼µØÖ·£¬ÓÃÓÚ·µ»ØÌí¼Ó½á¹û
             
-            //Ëæ»ú·ÖÅä·¢ËÍÐÄÌøµÄÊ±¼ä
+            //Ëæ»ú·ÖÅä·¢ËÍÐÄÌøµÄÆðÊ¼Ê±¼ä£¬±ÜÃâÐÄÌø³åÍ»
             switchTime = (num - i) * 200 * 3;
             hbTime = switchTime + SysRandom()%1000;
             subInfo.hbTime[0] = (uint8_t)(hbTime >> 8);
@@ -515,7 +547,7 @@ int8_t WMNetBuildAddDevice(uint8_t *id, uint8_t num)
     {
         g_eventHandle(WM_EVENT_ADD_RESULT, address);
     }
-    SysTimerSet(netBuildDone, num * 600, 0, (void *)WM_EVENT_ADD_DEV_END);
+    SysTimerSet(netBuildDone, num * 600, 0, (void *)WM_EVENT_ADD_DEV_END); //µÈ´ýÌí¼ÓÏûÏ¢·¢ËÍÍê³ÉºóÇÐ»»µ½¹¤×÷ÐÅµÀ
     return 0;
     
 }
@@ -526,18 +558,22 @@ static void searchDeviceAgain(void *args)
     SysTimerSet(netBuildDone, 1000, 0, (void *)WM_EVENT_SEARCH_END);
 }
 
+/*»½ÐÑºó´¦Àíº¯Êý*/
 void WMWakeupHandle(void)
 {
     if(g_isSleepDevice)
     {
         PMWakeUp();
+        HalStatusLedSet(1); //blink 
         if(WMGetNetStatus() == WM_STATUS_NET_BUILDED)
         {
             NetSendHeartbeat(WM_MASTER_NET_ADDR); //send heartbeat
         }
+        PMSetSleepStatus(false);//wakeup status
     }
 }
 
+/*ËÑË÷ÅäÍøÖÐµÄ´ÓÉè±¸*/
 int8_t WMNetBuildSearch(void)
 {
     SysLog("");
@@ -552,36 +588,38 @@ int8_t WMNetBuildSearch(void)
         netBuildStatusSet(WM_STATUS_NET_BUILDING);
         if(g_netbuildInfo.rfChannel == 0xff) //Ëæ»ú·ÖÅäÍ¨ÐÅÐÅµÀ
         {
-            SysRandomSeed(SysTime());
-            g_netbuildInfo.rfChannel = NET_WORK_START_CH + (SysRandom() % 30);
+            g_netbuildInfo.rfChannel = NET_WORK_START_CH + (getRandomValue(SysTime()) % 30);
         }
         searchDeviceInfoClear(); //Çå³ý»º´æ
-        NetBuildStart();
+        NetBuildStart();         //ÇÐ»»µ½ÅäÍøÍ¨µÀ
         NetbuildSearchDevice(g_myDevType, wmSearchResultHandle);
-        SysTimerSet(searchDeviceAgain, 1000, 0, NULL);
+        SysTimerSet(searchDeviceAgain, 1000, 0, NULL); //ËÑË÷Á½´Î
         return 0;
     }
     return -1;
 }
 
+/*½øÈëÍË³öÅäÍø*/
 void WMNetBuildStart(bool start)
 {
-    //if(g_mode == WM_MS_MODE_SLAVE)
+    if(start)
     {
-        if(start)
-        {
-            netBuildStatusSet(WM_STATUS_NET_BUILDING);
-            NetBuildStart();
-        }
-        else
-        {
-            NetBuildStop(g_netbuildInfo.rfChannel);
-        }
+        netBuildStatusSet(WM_STATUS_NET_BUILDING);
+        NetBuildStart();
+    }
+    else
+    {
+        NetBuildStop(g_netbuildInfo.rfChannel);
     }
 }
 
+/*Ð­µ÷Í¨ÐÅ
+* @isBuild: 0=¶Ï¿ª£¬1=½¨Á¢
+* @addr1,addr2 ÒªÐ­µ÷µÄÁ½¸ö´ÓÉè±¸µÄµØÖ·
+*/
 int8_t WMDeviceCoordination(bool isBuild, uint8_t addr1, uint8_t addr2)
 {
+    uint8_t keyValue;
     NetCoordinationDev_t cooDev;
     DMDevicesInfo_t *dev1, *dev2;
     
@@ -594,9 +632,10 @@ int8_t WMDeviceCoordination(bool isBuild, uint8_t addr1, uint8_t addr2)
             SysLog("can't find device");
             return -1;
         }
+        keyValue = (uint8_t)getRandomValue(SysTime());
         
         cooDev.isBuild = isBuild;
-        cooDev.key     = dev1->netInfo.key;
+        cooDev.key     = keyValue;
         cooDev.netAddr = addr1;
         cooDev.sleep   = dev1->netInfo.sleep;
         cooDev.uid     = dev1->netInfo.uid;
@@ -604,7 +643,7 @@ int8_t WMDeviceCoordination(bool isBuild, uint8_t addr1, uint8_t addr2)
         NetCoordinationOperate(addr2, dev2->netInfo.sleep, &cooDev); //½«addr1µÄÉè±¸ÐÅÏ¢·¢¸øadd2Éè±¸
 
         cooDev.isBuild = isBuild;
-        cooDev.key     = dev2->netInfo.key;
+        cooDev.key     = keyValue;
         cooDev.netAddr = addr2;
         cooDev.sleep   = dev2->netInfo.sleep;
         cooDev.uid     = dev2->netInfo.uid;
@@ -621,26 +660,27 @@ int8_t WMDeviceCoordination(bool isBuild, uint8_t addr1, uint8_t addr2)
     return -1;
 }
 
+/*ÉèÖÃÖ÷´ÓÄ£Ê½*/
 void WMSetMasterSlaveMode(bool isMaster)
 {
     bool needSave = false;
     SysLog("isMaster = %d", isMaster);
-    //TODO different?
+
     if(isMaster)
     {
         g_mode = WM_MS_MODE_MASTER;
-        if(g_netbuildInfo.netAddr != NET_MASTER_NET_ADDR)
+        if(g_netbuildInfo.netAddr != NET_MASTER_NET_ADDR) //Î´½øÐÐÅäÍø
         {
-            g_netbuildInfo.netAddr = NET_MASTER_NET_ADDR;
-            //Ëæ»úÑ¡ÔñÍ¨ÐÅÍ¨µÀ
+            g_netbuildInfo.netAddr = NET_MASTER_NET_ADDR; //Ö÷Éè±¸ÍøÂçµØÖ·Ê¼ÖÕÎª 0
+            /*Ëæ»úÑ¡ÔñÍ¨ÐÅÍ¨µÀ(90~120)*/
             SysRandomSeed(SysTime() + NetGetMacAddr(NULL)[3]);
             g_netbuildInfo.rfChannel = NET_WORK_START_CH + (SysRandom() % 30);
             
-            NetGetMacAddr(g_netbuildInfo.segAddr);
+            SysGetMacAddr(g_netbuildInfo.segAddr);  //Ö÷Éè±¸µÄMACµØÖ·¼´ÎªÍøÂçµÄ¶ÎµØÖ·
             needSave = true;
         }
         
-        netBuildStatusSet(WM_STATUS_NET_BUILDED);
+        netBuildStatusSet(WM_STATUS_NET_BUILDED);   //Ö÷Éè±¸Ö»ÓÐbuildedºÍbuildingÁ½ÖÖ×´Ì¬
     }
     else
     {
@@ -674,6 +714,7 @@ void WMSetModuleType(const uint8_t *type)
     memcpy(g_myDevType, type, NET_DEV_TYPE_LEN);
 }
 
+/*Çå¿ÕÅäÍøÐÅÏ¢¼°¹ØÁªÉè±¸µÄÐÅÏ¢*/
 void WMNetInfoClear(void)
 {
     SysLog("");
@@ -693,41 +734,27 @@ void WMEventRegister(WMEventReport_cb eventHandle)
 
 void WMInitialize(void)
 {
-    uint8_t mac[NET_MAC_ADDR_LEN] = {0x22, 0x02, 0x03, 0x10};
-    PMInitialize();
+    uint8_t mac[NET_MAC_ADDR_LEN] = {0x22, 0x02, 0x03, 0x55};
+    PMInitialize(); 
     NetLayerInit();
     NetLayerEventRegister(wmNetlayerEventHandle);
 #if 0
     SysSetMacAddr(mac);
 #endif    
-    //HalFlashRead(SYS_DEVICE_MAC_ADDR, mac, NET_MAC_ADDR_LEN);
-    SysGetMacAddr(mac);
-    NetSetMacAddr(mac);
+    NetSetMacAddr(SysGetMacAddr(mac));
 
     DMInitialize();
     DMEventRegister(dmEventHandle);
 
     HalStatusLedSet(3); //Ä¬ÈÏÎ´ÅäÍø
 
-#if 0
-    WMNetbuildInfo_t info;
-    //uint8_t seg[4] = {0x22, 0x02, 0x03, 0x11};
-    //uint8_t mac[4] = {0x22, 0x02, 0x03, 0x22};
-
-    info.netAddr = 0;
-    info.rfChannel = 100;
-    memcpy(info.segAddr, mac, 4);
-    //memcpy(info.mac, mac, 4);
-    HalFlashErase(SYS_NET_BUILD_INFO_ADDR);
-    HalFlashWrite(SYS_NET_BUILD_INFO_ADDR, &info, sizeof(WMNetbuildInfo_t));
-#endif
     memset(&g_netbuildInfo, 0xff, sizeof(WMNetbuildInfo_t));
     HalFlashRead(SYS_NET_BUILD_INFO_ADDR, &g_netbuildInfo, sizeof(WMNetbuildInfo_t));
 
-    if(g_netbuildInfo.netAddr != 0xff)
+    if(g_netbuildInfo.netAddr != 0xff) //ÒÑÅäÍø
     {
         netBuildStatusSet(WM_STATUS_NET_BUILDED);
-        updateNetInfoAndSwitchChannel(false);
+        updateNetInfoAndSwitchChannel(false); //¸üÐÂÍøÂçÐÅÏ¢£¬ÇÐ»»¹¤×÷ÐÅµÀ
     }
 }
 

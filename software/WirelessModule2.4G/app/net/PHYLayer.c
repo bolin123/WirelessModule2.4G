@@ -46,7 +46,7 @@ typedef struct PHYSendList_st
 }PHYSendList_t;
 
 static const uint8_t BRAODCASTMAC[PHY_MAC_LEN] = {0xff, 0xff, 0xff, 0xff};
-static uint8_t g_phyMacAddr[PHY_MAC_LEN];
+static uint8_t g_phyMacAddr[PHY_MAC_LEN] = {0};
 static uint16_t g_recvPid = 0xffff;
 static uint8_t g_sendPid = 0;
 static uint8_t g_segAddr[PHY_MAC_LEN];
@@ -61,6 +61,7 @@ static uint8_t g_phyRfChannel = 0;
 static uint8_t g_recvBuff[255];
 static uint8_t g_recvCount = 0;
 static uint16_t g_resendOffsetTime = 0;
+static bool g_phyInitError = false;
 
 void PHYSetMac(const uint8_t mac[PHY_MAC_LEN])
 {
@@ -475,6 +476,11 @@ void PHYPacketHandleCallbackRegiste(PHYOptHandle_cb optCb,
     g_heartbeatHandle = hbCb;
 }
 
+bool PHYInitError(void)
+{
+    return g_phyInitError;
+}
+
 void PHYPowerSet(bool sleep)
 {
     NRF24L01Sleep(sleep);
@@ -488,8 +494,8 @@ void PHYInitialize(void)
     if(!NRF24L01Check())
     {
         SysLog("PHY device not found!!!");
+        g_phyInitError = true;
     }
-    SysLog("PHY device init ok!");
 }
 
 void PHYPoll(void)

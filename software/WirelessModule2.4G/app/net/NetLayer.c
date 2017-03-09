@@ -237,7 +237,6 @@ static void netBuildFrameHandle(uint8_t srcMac[PHY_MAC_LEN], bool isBroadcast, u
             netThrowEvent(NET_EVENT_SEARCH, uid, (void *)content);
             break;
         case NET_PROTO_TYPE_REPORT_INFO:
-            //netThrowEvent(NET_EVENT_DEV_INFO, uid, (void *)content);
             if(g_searchResultHandle != NULL)
             {
                 g_searchResultHandle(uid, (NetbuildSubDeviceInfo_t *)content);

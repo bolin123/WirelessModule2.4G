@@ -3,7 +3,7 @@
 
 #include "HalCtype.h"
 
-void HalIwdtInitialize(void);
-void HalIwdtFeed(void);
+void HalWdgInitialize(void);
+void HalWdgFeed(void);
 
 #endif // HAL_WDT

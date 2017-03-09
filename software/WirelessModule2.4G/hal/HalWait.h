@@ -2,7 +2,6 @@
 #define HAL_WAIT_H
 
 #include "HalCtype.h"
-#include "HalWdt.h"
 #include "stm32f0xx_tim.h"
 
 #define HAL_WAIT_US 0
@@ -22,7 +21,6 @@ void hal_wait_check(uint8_t type);
         while(tmp < us && !(expression))\
           {\
             hal_wait_check(HAL_WAIT_US);\
-              HalIwdtFeed();\
                 if((TIM1->SR)&TIM_IT_Update)\
                   {\
                       TIM_ClearITPendingBit(TIM1, TIM_IT_Update);\
@@ -38,7 +36,6 @@ void hal_wait_check(uint8_t type);
         while(tmp < ms && !(expression))\
           {\
             hal_wait_check(HAL_WAIT_MS);\
-              HalIwdtFeed();\
                 if((TIM1->SR)&TIM_IT_Update)\
                   {\
                     TIM_ClearITPendingBit(TIM1, TIM_IT_Update);\
@@ -55,7 +52,6 @@ void hal_wait_check(uint8_t type);
           while(count < time && !(expression))\
             {\
               hal_wait_check(type);\
-                HalIwdtFeed();\
                   if((TIM1->SR)&TIM_IT_Update)\
                     {\
                       TIM_ClearITPendingBit(TIM1, TIM_IT_Update);\

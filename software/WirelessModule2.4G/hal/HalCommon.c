@@ -1,6 +1,6 @@
 #include "HalCommon.h"
 #include "HalClk.h"
-#include "HalWdt.h"
+#include "HalWdg.h"
 #include "HalGPIO.h"
 #include "HalTimer.h"
 #include "HalUart.h"
@@ -12,7 +12,11 @@
 
 static uint32_t volatile g_sysTimerCount;
 static bool g_intEnable = true;
+
+//led blink args
 static uint8_t g_blinkCount = 0;
+static SysTime_t g_lastBlinkTime;
+static uint8_t g_statusCount = 0;
 
 //redirect "printf()"
 int fputc(int ch, FILE *f)
@@ -38,28 +42,27 @@ static void debugUartInit(void)
 void HalStatusLedSet(uint8_t blinkCount)
 {
     g_blinkCount = blinkCount * 2;
+    g_statusCount = 0;
+    g_lastBlinkTime = SysTime();
 }
 
 static void HalStatusLedPoll(void)
 {
-    static SysTime_t lastBlinkTime;
-    static uint8_t statusCount = 0;
-    
-    if(statusCount < g_blinkCount)
+    if(g_statusCount < g_blinkCount)
     {
-        if(SysTimeHasPast(lastBlinkTime, 100))
+        if(SysTimeHasPast(g_lastBlinkTime, 100))
         {
             HalGPIOSet(HAL_STATUS_LED_PIN, !HalGPIOGet(HAL_STATUS_LED_PIN));
-            lastBlinkTime = SysTime();
-            statusCount++;
+            g_lastBlinkTime = SysTime();
+            g_statusCount++;
         }
     }
     else
     {
         HalGPIOSet(HAL_STATUS_LED_PIN, HAL_GPIO_LEVEL_HIGH);
-        if(SysTimeHasPast(lastBlinkTime, 2000))
+        if(SysTimeHasPast(g_lastBlinkTime, 2000))
         {
-            statusCount = 0;
+            g_statusCount = 0;
         }
     }
 }
@@ -68,6 +71,12 @@ static void HalStatusLedInit(void)
 {
     HalGPIOInit(HAL_STATUS_LED_PIN, HAL_GPIO_DIR_OUT);
     HalGPIOSet(HAL_STATUS_LED_PIN, HAL_GPIO_LEVEL_HIGH);
+}
+
+void HardFault_Handler(void)
+{
+    SysLog("");
+    HalReboot();
 }
 
 bool HalInterruptsGetEnable(void)

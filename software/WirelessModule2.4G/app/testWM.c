@@ -8,6 +8,9 @@
 #define MASTER_TYPE "MST001"
 #define STATUS_LED_PIN 0x11  //PB1
 
+static bool g_cooBuild = false;
+static uint8_t g_cooAddress;
+
 static void masterPoll(void)
 {
 #if 1
@@ -35,16 +38,23 @@ static void masterPoll(void)
 static void slavePoll(void)
 {
     static SysTime_t lastTime;
-    static SysTime_t sleepTime;
-    static bool firstSleep = true;
+    static uint8_t count = 0;
     uint8_t data[20] = {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0};
     
-    if(SysTimeHasPast(lastTime, 2000))
+    if(WMGetNetStatus() == WM_STATUS_NET_BUILDED && SysTimeHasPast(lastTime, 5000))
     {
-        SysLog("send data\n");
-        WMNetUserDataSend(NET_BROADCAST_NET_ADDR, data, sizeof(data));
+        SysLog("send data:");
+        memset(data, count, sizeof(data));
+        WMNetUserDataSend(WM_MASTER_NET_ADDR, data, sizeof(data));
+
+        if(g_cooBuild)
+        {
+            WMNetUserDataSend(g_cooAddress, data, sizeof(data));
+        }
         lastTime = SysTime();
+        count++;
     }
+#if 0
     if(firstSleep && SysTimeHasPast(sleepTime, 10000))
     {
         firstSleep = false;
@@ -54,7 +64,6 @@ static void slavePoll(void)
         NetLayerSleep(true);
         PWR_EnterSTOPMode(PWR_Regulator_LowPower, PWR_STOPEntry_WFI);
     }
-#if 0
     
     static uint8_t count = 0;
     uint8_t data[20] = {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0};
@@ -67,7 +76,7 @@ static void slavePoll(void)
         lastTime = SysTime();
         count++;
     }
-    #endif
+#endif
 }
 
 static void testEventHandle(WMEvent_t event, void *args)
@@ -75,6 +84,7 @@ static void testEventHandle(WMEvent_t event, void *args)
     uint8_t i, num;
     WMSearchResult_t result[WM_SEARCH_DEVICE_NUM];
     uint8_t devNum[WM_SEARCH_DEVICE_NUM];
+    WMCoordinationData_t *cooData = NULL;
 
     SysLog("event %d", event);
     
@@ -101,22 +111,32 @@ static void testEventHandle(WMEvent_t event, void *args)
         
         if(WM_STATUS_NET_IDLE == netStatus)
         {
-            HalGPIOSet(STATUS_LED_PIN, HAL_GPIO_LEVEL_HIGH);
+            //HalGPIOSet(STATUS_LED_PIN, HAL_GPIO_LEVEL_HIGH);
         }
         else if(WM_STATUS_NET_BUILDING == netStatus)
         {
         }
         else //WM_STATUS_NET_BUILDED
         {
-            HalGPIOSet(STATUS_LED_PIN, HAL_GPIO_LEVEL_LOW);
+            //HalGPIOSet(STATUS_LED_PIN, HAL_GPIO_LEVEL_LOW);
         }
     }
     else if(WM_EVENT_RECV_SEARCH == event)
     {
         
     }
+    else if(WM_EVENT_COORDINATION == event)
+    {
+        cooData = (WMCoordinationData_t *)args;
+        if(cooData->build)
+        {
+            g_cooBuild = true;
+            g_cooAddress = cooData->address;
+        }
+    }
     
 }
+/*
 extern void HalClkInit(void);
 void EXTI0_1_IRQHandler(void)
 {
@@ -129,6 +149,7 @@ void EXTI0_1_IRQHandler(void)
         EXTI_ClearITPendingBit(EXTI_Line0);
     }
 }
+
 #include "stm32f0xx_syscfg.h"
 static void irqInit(void)
 {
@@ -150,12 +171,12 @@ static void irqInit(void)
     NVIC_InitStructure.NVIC_IRQChannelPriority = 0x00;         //先占优先级4位,共16级  
     NVIC_Init(&NVIC_InitStructure);   //根据NVIC_InitStruct中指定的参数初始化外设NVIC寄存器  
 }
-
+*/
 void testWMInit(void)
 {
-    HalGPIOInit(STATUS_LED_PIN, HAL_GPIO_DIR_OUT);
-    HalGPIOSet(STATUS_LED_PIN, HAL_GPIO_LEVEL_LOW);
-    irqInit();
+//    HalGPIOInit(STATUS_LED_PIN, HAL_GPIO_DIR_OUT);
+//    HalGPIOSet(STATUS_LED_PIN, HAL_GPIO_LEVEL_LOW);
+//    irqInit();
     WMInitialize();
     WMEventRegister(testEventHandle);
 #if DEV_MASTER
@@ -164,7 +185,7 @@ void testWMInit(void)
     WMSetModuleType(MASTER_TYPE);
 #else
     WMSetMasterSlaveMode(false);
-    WMSetSleepMode(1);
+    WMSetSleepMode(0);
     WMSetModuleType(SLAVE_TYPE);
     WMNetBuildStart(1);
 #endif

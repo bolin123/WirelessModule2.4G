@@ -23,4 +23,3 @@
 .\objects\halwait.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_tim.h
 .\objects\halwait.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h
 .\objects\halwait.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h
-.\objects\halwait.o: ..\..\hal\HalWdt.h

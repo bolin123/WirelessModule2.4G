@@ -3,6 +3,7 @@
 
 #include "Sys.h"
 
+void PMSetSleepStatus(bool sleep);
 void PMWakeUp(void);
 void PMSleep(void);
 void PMInitialize(void);

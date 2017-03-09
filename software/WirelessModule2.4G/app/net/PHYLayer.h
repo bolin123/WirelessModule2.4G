@@ -18,6 +18,7 @@ typedef void (* PHYOptHandle_cb)(uint8_t srcAddr, bool isSleep, bool isBroadcast
 typedef void (* PHYEstnetHandle_cb)(uint8_t srcMac[PHY_MAC_LEN], bool isBroadcast, uint8_t *data, uint8_t len);
 typedef void (* PHYHeartbeatHandle_cb)(uint8_t srcAddr, bool isSleep);
 
+bool PHYInitError(void);
 void PHYInitialize(void);
 void PHYPoll(void);
 void PHYEstnetPacketSend(const uint8_t dstMac[PHY_MAC_LEN], const uint8_t *data, uint8_t len, bool directly);

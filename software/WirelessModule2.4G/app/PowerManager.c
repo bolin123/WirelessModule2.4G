@@ -1,11 +1,16 @@
 #include "PowerManager.h"
 #include "WirelessModule.h"
-#include "MProto.h"
 #include "HalPower.h"
+
+void PMSetSleepStatus(bool sleep)
+{
+    HalSetSleepPinStatus(sleep);
+}
 
 void PMSleep(void)
 {
     SysLog("");
+    PMSetSleepStatus(true);
     NetLayerSleep(true); //RF sleep
     HalPowerSleep();     //MCU sleep
 }
@@ -28,8 +33,8 @@ void PMPoll(void)
     /*管脚置为休眠，不处在配网状态，收到设备信息，发送队列为空*/
     if(HalPowerNeedSleep()
       && WMGetNetStatus() != WM_STATUS_NET_BUILDING
-      && MProtoGotDeviceInfo()
-      && NetSendListEmpty())
+      && SysGotDeviceInfo()
+      && SysDataSendListEmpty())
     {
         PMSleep();
     }

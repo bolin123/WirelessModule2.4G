@@ -36,6 +36,18 @@ void EXTI0_1_IRQHandler(void)
     }
 }
 
+void HalSetSleepPinStatus(bool sleep)
+{
+    if(sleep)
+    {
+        HalGPIOSet(PM_SLEEP_STATUS_PIN, HAL_GPIO_LEVEL_LOW);//sleep
+    }
+    else
+    {
+        HalGPIOSet(PM_SLEEP_STATUS_PIN, HAL_GPIO_LEVEL_HIGH);//wakeup
+    }
+}
+
 bool HalPowerNeedSleep(void)
 {
     return (HalGPIOGet(PM_WAKEUP_SET_PIN) == HAL_GPIO_LEVEL_LOW);
@@ -43,14 +55,12 @@ bool HalPowerNeedSleep(void)
 
 void HalPowerSleep(void)
 {
-    HalGPIOSet(PM_SLEEP_STATUS_PIN, HAL_GPIO_LEVEL_LOW);
     PWR_EnterSTOPMode(PWR_Regulator_LowPower, PWR_STOPEntry_WFI);
 }
 
 void HalPowerWakeup(void)
 {
     HalClkInit(); //reinit system clock
-    HalGPIOSet(PM_SLEEP_STATUS_PIN, HAL_GPIO_LEVEL_HIGH);
 }
 
 void HalPowerPoll(void)

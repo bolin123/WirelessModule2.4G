@@ -156,27 +156,20 @@ bool NRF24L01Check(void)
 {
 	uint8_t buf[5]={0XA5,0XA5,0XA5,0XA5,0XA5};
 	uint8_t i;
+    SysLog("");
 
 	nrf24l01WriteBuf(WRITE_REG + TX_ADDR, buf, 5);
+    memset(buf, 0xff, sizeof(buf));
 	nrf24l01ReadBuf(TX_ADDR, buf, 5);
     //HalPrintf("RECV:%02x %02x %02x %02x %02x\n", buf[0], buf[1], buf[2], buf[3], buf[4]);
 	for(i = 0; i < 5; i++)
     {
         if(buf[i] != 0XA5)
         {
-            break;
+            return false;
         }
     }   
-                                         
-	if(i != 5)
-    {
-        return false;
-    }
 
-    //HalPrintf("irq power reg:%02x\n", nrf24l01ReadReg(0x00));
-    //HalPrintf("24l01 work CH:%d\n", nrf24l01ReadReg(0x05));
-    //HalPrintf("rf config reg:%02x\n", nrf24l01ReadReg(0x06));
-            
 	return true;
 }
 

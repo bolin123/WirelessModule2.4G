@@ -1,12 +1,15 @@
 #include "Sys.h"
 #include "SysTimer.h"
 #include "WirelessModule.h"
-#include "MProto.h"
 #include "Manufacture.h"
 #include "HalFlash.h"
-//#include "testWM.h"
+#if SYS_TEST_WM
+#include "testWM.h"
+#else
+#include "MProto.h"
+#endif
 
-static uint8_t g_sysVersion[4] = {1, 0, 0, 0}; //系统版本号
+static uint8_t g_sysVersion[4] = {1, 0, 0, 1}; //系统版本号
 //xorshift随机数算法
 static uint32_t x = 123456789UL, y = 567819012UL, z = 321456780UL, w = 1234UL;
 
@@ -17,13 +20,33 @@ static uint32_t xorshift128(void)
     return w = w ^ (w >> 19) ^ t ^ (t >> 8);
 }
 
+bool SysDataSendListEmpty(void)
+{
+#if SYS_TEST_WM
+    return NetSendListEmpty();
+#else
+    return (NetSendListEmpty() && MProtoSendListEmpty());
+#endif
+}
+
+bool SysGotDeviceInfo(void)
+{
+#if SYS_TEST_WM
+    return true;
+#else
+    return MProtoGotDeviceInfo();
+#endif
+}
+
 void SysUartRecvHandle(uint8_t byte)
 {
-    if(!MProtoGotDeviceInfo())
+    if(!SysGotDeviceInfo()) //获取到设备信息后关闭产测功能
     {
         MFRecvByte(byte);
     }
+#if !SYS_TEST_WM
     MProtoRecvByte(byte);
+#endif
 }
 
 uint8_t *SysGetVersion(void)
@@ -38,6 +61,7 @@ uint32_t SysRandom(void)
 
 void SysSetMacAddr(uint8_t *mac)
 {
+    SysLog("%02x:%02x:%02x:%02x", mac[0], mac[1], mac[2], mac[3]);
     HalFlashErase(SYS_DEVICE_MAC_ADDR);
     HalFlashWrite(SYS_DEVICE_MAC_ADDR, mac, PHY_MAC_LEN);
 }
@@ -90,15 +114,22 @@ void SysInitialize(void)
 {
     HalInitialize();
     SysTimerInitialize();
+    
+#if SYS_TEST_WM
+    testWMInit();
+#else
     MProtoInitialize();
+#endif
     MFInitialize();
-    //testWMInit();
 }
 
 void SysPoll(void)
 {
-    //testWMPoll();
+#if SYS_TEST_WM
+    testWMPoll();
+#else
     MProtoPoll();
+#endif
     MFPoll();
     HalPoll();
     SysTimerPoll();

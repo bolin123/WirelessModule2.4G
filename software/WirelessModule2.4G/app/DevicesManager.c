@@ -86,6 +86,7 @@ DMDevicesInfo_t *DMDeviceAddressFind(uint8_t addr)
     {
         return &g_deviceInfo[addr];
     }
+    SysLog("Dev [%d] not found!", addr);
     return NULL;
 }
 

@@ -25,7 +25,6 @@
 .\objects\phylayer.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h
 .\objects\phylayer.o: ..\..\app\net\NRF24L01P\NRF24L01.h
 .\objects\phylayer.o: ..\..\hal\HalWait.h
-.\objects\phylayer.o: ..\..\hal\HalWdt.h
 .\objects\phylayer.o: ..\..\app\Sys.h
 .\objects\phylayer.o: ..\..\hal\HalCommon.h
 .\objects\phylayer.o: ..\..\app\Sys.h

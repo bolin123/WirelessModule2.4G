@@ -150,6 +150,11 @@ static void mprotoFrameHandle(MProtoFrameType_t type, bool needAck, uint8_t *dat
         sendAck();
     }
 
+    if(!g_gotDeviceInfo && type != MPROTO_FRAME_TYPE_REQUEST)
+    {
+        return;
+    }
+
     switch(type)
     {
     case MPROTO_FRAME_TYPE_ACK:
@@ -262,6 +267,11 @@ void MProtoRecvByte(uint8_t byte)
         }
         g_byteCount = 0;
     }
+}
+
+bool MProtoSendListEmpty(void)
+{
+    return (VTListFirst(&g_frameSendList) == NULL);
 }
 
 static void mprotoSendListHandle(void)
@@ -442,9 +452,9 @@ void MProtoPoll(void)
 {
     requestDeviceInfo();
     mprotoSendListHandle();
+    WMPoll(); 
     if(g_gotDeviceInfo)
     {
-       WMPoll(); 
        heartbeatSend();
     }
 }

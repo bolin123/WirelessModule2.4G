@@ -1,9 +1,9 @@
 #include "HalWdt.h"
 #include "stm32f0xx_iwdg.h"
 
-void HalIwdtInitialize(void)
+void HalWdgInitialize(void)
 {
-#if 1
+#if 0
 	//检测系统是否由独立看门狗喂狗复位
 	if (RCC_GetFlagStatus(RCC_FLAG_IWDGRST) != RESET)
 	{ 
@@ -24,9 +24,9 @@ void HalIwdtInitialize(void)
 #endif
 }
 
-void HalIwdtFeed(void)
+void HalWdgFeed(void)
 {
-#if 1
+#if 0
 	/* 从新导入IWDG计数器 */
 	IWDG_ReloadCounter();  
 #endif

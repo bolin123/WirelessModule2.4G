@@ -26,7 +26,7 @@
 .\objects\halcommon.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h
 .\objects\halcommon.o: ..\..\hal\HalCommon.h
 .\objects\halcommon.o: ..\..\hal\HalClk.h
-.\objects\halcommon.o: ..\..\hal\HalWdt.h
+.\objects\halcommon.o: ..\..\hal\HalWdg.h
 .\objects\halcommon.o: ..\..\hal\HalGPIO.h
 .\objects\halcommon.o: ..\..\hal\HalTimer.h
 .\objects\halcommon.o: ..\..\hal\HalUart.h
