@@ -107,7 +107,7 @@ static void lowLevelDataSend(const uint8_t *data, uint8_t len)
     uint8_t count = len / RX_PLOAD_WIDTH;
     uint8_t last = len % RX_PLOAD_WIDTH;
     uint8_t buff[RX_PLOAD_WIDTH];
-#if 1
+#if 0
     HalPrintf("Net Send:");
     for(i = 0; i < len; i++)
     {
@@ -264,7 +264,7 @@ void PHYPacketRecvHandle(uint8_t *data, uint8_t len)
         }
     }
     
-#if 1
+#if 0
     HalPrintf("Net Recv:");
     for(i = 0; i < len; i++)
     {

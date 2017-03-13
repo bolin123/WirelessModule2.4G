@@ -2,6 +2,7 @@
 #include "VTList.h"
 #include "WirelessModule.h"
 #include "DevicesManager.h"
+#include "Manufacture.h"
 #include "HalUart.h"
 
 #define MPROTO_FRAME_HEAD 0xFC
@@ -85,7 +86,7 @@ static void lowDataSend(const uint8_t *data, uint8_t len)
         SysPrintf("%02x ", data[i]);
     }
     SysPrintf("\n");
-    HalUartWrite(HAL_UART_1, data, len);
+    HalUartWrite(SYS_UART_COMM_PORT, data, len);
 }
 
 static void mprotoFrameSend(MProtoFrameType_t type, bool needAck, uint8_t *data, uint8_t dlen)
@@ -143,7 +144,7 @@ static void coordinationResult(uint8_t build, bool success, uint8_t addr1, uint8
 static void mprotoFrameHandle(MProtoFrameType_t type, bool needAck, uint8_t *data, uint8_t dlen)
 {
     uint8_t buff[255];
-    uint8_t len, i;
+    uint8_t len;
 
     if(needAck && type != MPROTO_FRAME_TYPE_ACK)
     {
@@ -175,6 +176,7 @@ static void mprotoFrameHandle(MProtoFrameType_t type, bool needAck, uint8_t *dat
             WMSetMasterSlaveMode(deviceInfo->isMaster);
             WMSetSleepMode(deviceInfo->needSleep);
             g_gotDeviceInfo = true;
+            MFStop();
         }
         break;
     case MPROTO_FRAME_TYPE_NETCONFIG:
@@ -331,9 +333,10 @@ static bool netStatusChanged(void)
 static void heartbeatSend(void)
 {
     static SysTime_t lastHbTime = 0;
+    static uint16_t heartbeatTime = 5000;
     uint8_t status;
 
-    if(lastHbTime == 0 || SysTimeHasPast(lastHbTime, 5000) || netStatusChanged())
+    if(lastHbTime == 0 || SysTimeHasPast(lastHbTime, heartbeatTime) || netStatusChanged())
     {
         status = (WMGetNetStatus() << 1) + WMIsDeviceOnline();
         mprotoFrameSend(MPROTO_FRAME_TYPE_HEARTBEAT, false, &status, sizeof(status));
@@ -343,6 +346,8 @@ static void heartbeatSend(void)
             netStatusChanged(); //更新一次oldStatus
         }
         lastHbTime = SysTime();
+        SysRandomSeed(SysTime());
+        heartbeatTime = 5000 + (SysRandom() % 500);
     }
 }
 
@@ -432,7 +437,7 @@ static void commPortInit(void)
     HalUartConfig_t uartConfig;
     uartConfig.baudRate = 9600;
     uartConfig.parity = PARITY_NONE;
-    HalUartInit(HAL_UART_1, &uartConfig);
+    HalUartInit(SYS_UART_COMM_PORT, &uartConfig);
 }
 
 bool MProtoGotDeviceInfo(void)
@@ -443,16 +448,15 @@ bool MProtoGotDeviceInfo(void)
 void MProtoInitialize(void)
 {
     VTListInit(&g_frameSendList);
-    WMInitialize();
     WMEventRegister(mprotoEventHandle);
     commPortInit();
+    MFStart(lowDataSend);
 }
 
 void MProtoPoll(void)
 {
     requestDeviceInfo();
     mprotoSendListHandle();
-    WMPoll(); 
     if(g_gotDeviceInfo)
     {
        heartbeatSend();

@@ -9,7 +9,7 @@
 #include "MProto.h"
 #endif
 
-static uint8_t g_sysVersion[4] = {1, 0, 0, 1}; //系统版本号
+static uint8_t g_sysVersion[4] = {1, 0, 0, 2}; //系统版本号
 //xorshift随机数算法
 static uint32_t x = 123456789UL, y = 567819012UL, z = 321456780UL, w = 1234UL;
 
@@ -38,15 +38,15 @@ bool SysGotDeviceInfo(void)
 #endif
 }
 
-void SysUartRecvHandle(uint8_t byte)
+void SysUartRecvHandle(HalUart_t port, uint8_t byte)
 {
-    if(!SysGotDeviceInfo()) //获取到设备信息后关闭产测功能
+    if(port == SYS_UART_COMM_PORT)
     {
         MFRecvByte(byte);
-    }
 #if !SYS_TEST_WM
-    MProtoRecvByte(byte);
+        MProtoRecvByte(byte);
 #endif
+    }
 }
 
 uint8_t *SysGetVersion(void)
@@ -114,13 +114,14 @@ void SysInitialize(void)
 {
     HalInitialize();
     SysTimerInitialize();
+    MFInitialize();
+    WMInitialize();
     
 #if SYS_TEST_WM
     testWMInit();
 #else
     MProtoInitialize();
 #endif
-    MFInitialize();
 }
 
 void SysPoll(void)
@@ -130,6 +131,7 @@ void SysPoll(void)
 #else
     MProtoPoll();
 #endif
+    WMPoll(); 
     MFPoll();
     HalPoll();
     SysTimerPoll();

@@ -4,8 +4,8 @@
 #include "stm32f0xx_syscfg.h"
 #include "stm32f0xx_pwr.h"
 
-#define PM_WAKEUP_SET_PIN 0x00
-#define PM_SLEEP_STATUS_PIN 0x08
+#define PM_WAKEUP_SET_PIN HAL_GPIO_NUM_INVAILD //0x00
+#define PM_SLEEP_STATUS_PIN HAL_GPIO_NUM_INVAILD //0x08
 
 static void wakeupIrqInit(void)
 {
@@ -26,6 +26,7 @@ static void wakeupIrqInit(void)
     NVIC_Init(&NVIC_InitStructure);   //根据NVIC_InitStruct中指定的参数初始化外设NVIC寄存器  
 }
 
+#if 0
 extern void WMWakeupHandle(void);
 void EXTI0_1_IRQHandler(void)
 {
@@ -35,6 +36,7 @@ void EXTI0_1_IRQHandler(void)
         EXTI_ClearITPendingBit(EXTI_Line0);
     }
 }
+#endif
 
 void HalSetSleepPinStatus(bool sleep)
 {
@@ -55,7 +57,9 @@ bool HalPowerNeedSleep(void)
 
 void HalPowerSleep(void)
 {
+#if 0
     PWR_EnterSTOPMode(PWR_Regulator_LowPower, PWR_STOPEntry_WFI);
+#endif
 }
 
 void HalPowerWakeup(void)
@@ -72,7 +76,12 @@ void HalPowerInitialize(void)
 {
     HalGPIOInit(PM_WAKEUP_SET_PIN, HAL_GPIO_DIR_IN);
     HalGPIOInit(PM_SLEEP_STATUS_PIN, HAL_GPIO_DIR_OUT);
-    wakeupIrqInit();
+
+    if(PM_WAKEUP_SET_PIN != HAL_GPIO_NUM_INVAILD)
+    {
+        wakeupIrqInit();
+    }
+    
     HalGPIOSet(PM_SLEEP_STATUS_PIN, HAL_GPIO_LEVEL_HIGH); //默认为唤醒状态
 }
 

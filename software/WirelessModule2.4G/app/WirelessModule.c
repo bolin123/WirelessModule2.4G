@@ -48,7 +48,7 @@ static uint32_t getRandomValue(uint32_t seed)
 
 static bool needHandleTheEvent(NetEventType_t event)
 {
-    if(!SysGotDeviceInfo())
+    if(!SysGotDeviceInfo()) //获取到设备信息后才进行消息处理
     {
         return false;
     }
@@ -100,6 +100,8 @@ static void subDevHeartbeat(void)
             SysLog("");
             NetSendHeartbeat(WM_MASTER_NET_ADDR);
             g_lastHbTime = SysTime();
+            /*下次心跳加1s以内的随机数，避免冲突*/
+            g_hbIntervalTime = NET_NORMAL_DEVICE_HBTIME + getRandomValue(SysTime()) % 1000;
         }
     }
 }
@@ -259,7 +261,7 @@ static void wmSearchResultHandle(uint32_t uid, NetbuildSubDeviceInfo_t *devInfo)
 }
 
 /*网络事件处理函数*/
-static void wmNetlayerEventHandle(NetEventType_t event, uint32_t from, void *args)
+static void wmEventHandle(NetEventType_t event, uint32_t from, void *args)
 {
     if(!needHandleTheEvent(event))
     {
@@ -273,7 +275,7 @@ static void wmNetlayerEventHandle(NetEventType_t event, uint32_t from, void *arg
         {
             uint8_t *type = (uint8_t *)args;
             SysTime_t delayTime;
-            SysLog("NET_EVENT_SEARCH: master %c%c%c%c%c%c", type[0], type[1], type[2], type[3], type[4], type[5]);
+            SysLog("SEARCH: master %c%c%c%c%c%c", type[0], type[1], type[2], type[3], type[4], type[5]);
 
             delayTime = getRandomValue(SysTime()) % 800; //随机延时 <800 ms，防止与其他从设备冲突
             SysTimerSet(delayReportDeviceInfo, delayTime, 0, (void *)from);
@@ -300,7 +302,7 @@ static void wmNetlayerEventHandle(NetEventType_t event, uint32_t from, void *arg
             hbtime = netInfo->hbTime[0];
             hbtime = (hbtime << 8) + netInfo->hbTime[1];
 
-            SysLog("NET_EVENT_DEV_ADD: my address = %d, rfChannel = %d, key = %d, hbtime = %d", \
+            SysLog("DEV_ADD: my address = %d, rfChannel = %d, key = %d, hbtime = %d", \
                     netInfo->addr, netInfo->rfChannel, netInfo->key, hbtime);
             
             DMMasterDeviceSet(netInfo->key, from, netInfo->masterType, g_hbIntervalTime); //设置主设备信息
@@ -310,7 +312,7 @@ static void wmNetlayerEventHandle(NetEventType_t event, uint32_t from, void *arg
         }
         break;
     case NET_EVENT_DEV_DEL:
-        SysLog("NET_EVENT_DEV_DEL !");
+        SysLog("DEV_DEL !");
         memset(&g_netbuildInfo, 0xff, sizeof(WMNetbuildInfo_t));
         updateNetInfoAndSwitchChannel(true);
         if(g_eventHandle != NULL)
@@ -323,7 +325,7 @@ static void wmNetlayerEventHandle(NetEventType_t event, uint32_t from, void *arg
         {
             NetCoordinationDev_t *cooDev = (NetCoordinationDev_t *)args;
             WMCoordinationData_t cooData;
-            SysLog("NET_EVENT_COORDINATION: build=%d, key=%d, netAddr=%d, type=%c%c%c%c%c%c, uid=%d, sleep=%d", \
+            SysLog("COORDINATION: build=%d, key=%d, netAddr=%d, type=%c%c%c%c%c%c, uid=%d, sleep=%d", \
                     cooDev->isBuild, cooDev->key, cooDev->netAddr, cooDev->devType[0], cooDev->devType[1], \
                     cooDev->devType[2], cooDev->devType[3], cooDev->devType[4], cooDev->devType[5], \
                     cooDev->uid, cooDev->sleep);
@@ -350,7 +352,7 @@ static void wmNetlayerEventHandle(NetEventType_t event, uint32_t from, void *arg
     case NET_EVENT_DEVICE_HEARTBEAT:
         if(DMDeviceAddressFind(from) != NULL)
         {
-            SysLog("NET_EVENT_DEVICE_HEARTBEAT subAddr = %d", from);
+            SysLog("HEARTBEAT, addr = %d", from);
             DMUpdateHeartbeat((uint8_t)from);
             if(g_mode == WM_MS_MODE_MASTER)
             {
@@ -365,7 +367,7 @@ static void wmNetlayerEventHandle(NetEventType_t event, uint32_t from, void *arg
             if(DMDeviceAddressFind(from) != NULL)
             {
                 DMUpdateHeartbeat((uint8_t)from);
-                SysLog("NET_EVENT_USER_DATA from [%d]", from);
+                SysLog("USER_DATA from [%d]", from);
 
                 userData.from = (uint8_t)from;
                 userData.isBroadcast = netData->isBroadcast;
@@ -427,6 +429,7 @@ uint8_t WMGetSearchResult(uint8_t *result)
 {
     uint8_t i, count = 0;
 
+    SysLog("");
     for(i = 0; i < WM_SEARCH_DEVICE_NUM; i++)
     {
         if(g_searchDevInfo[i].uid != 0)
@@ -561,6 +564,7 @@ static void searchDeviceAgain(void *args)
 /*唤醒后处理函数*/
 void WMWakeupHandle(void)
 {
+#if 0
     if(g_isSleepDevice)
     {
         PMWakeUp();
@@ -571,6 +575,7 @@ void WMWakeupHandle(void)
         }
         PMSetSleepStatus(false);//wakeup status
     }
+#endif
 }
 
 /*搜索配网中的从设备*/
@@ -586,10 +591,12 @@ int8_t WMNetBuildSearch(void)
     if(g_mode == WM_MS_MODE_MASTER)
     {
         netBuildStatusSet(WM_STATUS_NET_BUILDING);
+        #if 0
         if(g_netbuildInfo.rfChannel == 0xff) //随机分配通信信道
         {
             g_netbuildInfo.rfChannel = NET_WORK_START_CH + (getRandomValue(SysTime()) % 30);
         }
+        #endif
         searchDeviceInfoClear(); //清除缓存
         NetBuildStart();         //切换到配网通道
         NetbuildSearchDevice(g_myDevType, wmSearchResultHandle);
@@ -602,6 +609,7 @@ int8_t WMNetBuildSearch(void)
 /*进入退出配网*/
 void WMNetBuildStart(bool start)
 {
+    SysLog("start = %d", start);
     if(start)
     {
         netBuildStatusSet(WM_STATUS_NET_BUILDING);
@@ -669,14 +677,16 @@ void WMSetMasterSlaveMode(bool isMaster)
     if(isMaster)
     {
         g_mode = WM_MS_MODE_MASTER;
+        
         if(g_netbuildInfo.netAddr != NET_MASTER_NET_ADDR) //未进行配网
         {
+            
             g_netbuildInfo.netAddr = NET_MASTER_NET_ADDR; //主设备网络地址始终为 0
+            SysGetMacAddr(g_netbuildInfo.segAddr);  //主设备的MAC地址即为网络的段地址
             /*随机选择通信通道(90~120)*/
             SysRandomSeed(SysTime() + NetGetMacAddr(NULL)[3]);
             g_netbuildInfo.rfChannel = NET_WORK_START_CH + (SysRandom() % 30);
             
-            SysGetMacAddr(g_netbuildInfo.segAddr);  //主设备的MAC地址即为网络的段地址
             needSave = true;
         }
         
@@ -735,9 +745,9 @@ void WMEventRegister(WMEventReport_cb eventHandle)
 void WMInitialize(void)
 {
     uint8_t mac[NET_MAC_ADDR_LEN] = {0x22, 0x02, 0x03, 0x55};
-    PMInitialize(); 
+    //PMInitialize(); 
     NetLayerInit();
-    NetLayerEventRegister(wmNetlayerEventHandle);
+    NetLayerEventRegister(wmEventHandle);
 #if 0
     SysSetMacAddr(mac);
 #endif    
@@ -763,9 +773,11 @@ void WMPoll(void)
     NetLayerPoll();
     subDevHeartbeat();
     DMPoll();
+    #if 0
     if(g_isSleepDevice)
     {
         PMPoll();
     }
+    #endif
 }
 

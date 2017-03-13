@@ -15,7 +15,7 @@
 #define NET_BROADCAST_NET_ADDR 0xff
 
 #define NET_SLEEP_DEVICE_HBTIME (300000) //5min
-#define NET_NORMAL_DEVICE_HBTIME (5000) //5s
+#define NET_NORMAL_DEVICE_HBTIME (10000) //10s
 
 //typedef enum
 //{

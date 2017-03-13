@@ -1,7 +1,14 @@
 #ifndef HAL_H
 #define HAL_H
 
-#include "Sys.h"
+#include "HalClk.h"
+#include "HalWdg.h"
+#include "HalGPIO.h"
+#include "HalTimer.h"
+#include "HalUart.h"
+#include "HalSpi.h"
+#include "HalFlash.h"
+#include "HalWait.h"
 
 void HalInitialize(void);
 void HalPoll(void);

@@ -4,6 +4,7 @@
 #include "SysTimer.h"
 
 #define MF_FRAME_HEAD_FLAG 0xaa
+#define MF_FRAME_BUFF_LEN  255
 
 #define MF_ERR_CHECK_SUCCESS   1
 #define MF_ERR_NOT_READY       0
@@ -72,11 +73,14 @@ typedef struct
     uint8_t mac[PHY_MAC_LEN];
 }MFWriteInfo_t;
 
-static uint8_t g_buff[128];
 static uint8_t g_count = 0;
 static uint8_t g_testType = 0;
 static int8_t g_testResult = 0;
 static bool g_sendCheckResult = false;
+
+static bool g_start = false;
+static uint8_t *g_frameBuf = NULL;
+static MFSendDataFunc_t g_sendDataFunc = NULL;
 
 static uint8_t checkSum(uint8_t *data, uint8_t len)
 {
@@ -107,7 +111,10 @@ static void mfFrameSend(uint8_t type, uint8_t *data, uint8_t len)
     }
     SysPrintf("\n");
 #endif
-    HalUartWrite(HAL_UART_1, buf, frame->len + 2);
+    if(g_sendDataFunc != NULL)
+    {
+        g_sendDataFunc(buf, frame->len + 2);
+    }
 }
 
 static void mfSendTestResult(void)
@@ -254,10 +261,15 @@ static void mfFrameHandle(MFFrame_t *frame)
 
 void MFRecvByte(uint8_t byte)
 {
+    if(!g_start)
+    {
+        return;
+    }
+    
     static uint8_t frameLength = 0;
     MFFrame_t *frame;
     
-    g_buff[g_count++] = byte;
+    g_frameBuf[g_count++] = byte;
 
     if(g_count == 1)
     {
@@ -269,7 +281,7 @@ void MFRecvByte(uint8_t byte)
     else if(g_count == 2)
     {
         frameLength = byte;
-        if(byte > sizeof(g_buff) - 2)
+        if(byte > MF_FRAME_BUFF_LEN - 2)
         {
             g_count = 0;
             frameLength = 0;
@@ -277,14 +289,38 @@ void MFRecvByte(uint8_t byte)
     }
     else if(g_count == frameLength + 2)
     {
-        frame = (MFFrame_t *)g_buff;
-        if(checkSum(&g_buff[3], frameLength - 1) == frame->crc)
+        frame = (MFFrame_t *)g_frameBuf;
+        if(checkSum(&g_frameBuf[3], frameLength - 1) == frame->crc)
         {
             mfFrameHandle(frame);
         }
         g_count = 0;
         frameLength = 0;
     }
+}
+
+void MFStop(void)
+{
+    SysLog("");
+    g_start = false;
+    if(g_frameBuf != NULL)
+    {
+        free(g_frameBuf);
+        g_frameBuf = NULL;
+    }
+    g_sendDataFunc = NULL;
+}
+
+void MFStart(MFSendDataFunc_t sendFunc)
+{
+    SysLog("");
+    g_sendDataFunc = sendFunc;
+    if(g_frameBuf == NULL)
+    {
+        g_frameBuf = (uint8_t *)malloc(MF_FRAME_BUFF_LEN);
+    }
+    g_count = 0;
+    g_start = true;
 }
 
 void MFPoll(void)

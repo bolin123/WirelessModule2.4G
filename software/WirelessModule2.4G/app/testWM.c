@@ -1,10 +1,11 @@
 #include "testWM.h"
 #include "HalGPIO.h"
 #include "WirelessModule.h"
+#include "Manufacture.h"
 
 #define DEV_MASTER  0
 
-#define SLAVE_TYPE "SLV201"
+#define SLAVE_TYPE "SLV221"
 #define MASTER_TYPE "MST001"
 #define STATUS_LED_PIN 0x11  //PB1
 
@@ -119,6 +120,7 @@ static void testEventHandle(WMEvent_t event, void *args)
         else //WM_STATUS_NET_BUILDED
         {
             //HalGPIOSet(STATUS_LED_PIN, HAL_GPIO_LEVEL_LOW);
+            MFStop();
         }
     }
     else if(WM_EVENT_RECV_SEARCH == event)
@@ -136,47 +138,30 @@ static void testEventHandle(WMEvent_t event, void *args)
     }
     
 }
-/*
-extern void HalClkInit(void);
-void EXTI0_1_IRQHandler(void)
+
+static void lowDataSend(const uint8_t *data, uint8_t len)
 {
-    if(EXTI_GetITStatus(EXTI_Line0) != RESET)  
+    uint8_t i;
+    
+    SysPrintf("Test send:");
+    for(i = 0; i < len; i++)
     {
-        HalClkInit();
-        SysPrintf("PA0 Pin IRQ...\n");
-        NetLayerSleep(false);
-        HalGPIOSet(STATUS_LED_PIN, HAL_GPIO_LEVEL_LOW);
-        EXTI_ClearITPendingBit(EXTI_Line0);
+        SysPrintf("%02x ", data[i]);
     }
+    SysPrintf("\n");
+    HalUartWrite(SYS_UART_COMM_PORT, data, len);
 }
 
-#include "stm32f0xx_syscfg.h"
-static void irqInit(void)
+static void commPortInit(void)
 {
-    EXTI_InitTypeDef EXTI_InitStructure;  
-    NVIC_InitTypeDef NVIC_InitStructure;  
-
-    HalGPIOInit(0x00, HAL_GPIO_DIR_IN);
-        
-    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA, EXTI_PinSource0);
-    
-    EXTI_InitStructure.EXTI_Line = EXTI_Line0;    //设置引脚  
-    EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt; //设置为外部中断模式  
-    EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;  // 设置上升和下降沿都检测  
-    EXTI_InitStructure.EXTI_LineCmd = ENABLE;                //使能外部中断新状态  
-    EXTI_Init(&EXTI_InitStructure); 
-    
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;                //使能外部中断通道     
-    NVIC_InitStructure.NVIC_IRQChannel = EXTI0_1_IRQn;  
-    NVIC_InitStructure.NVIC_IRQChannelPriority = 0x00;         //先占优先级4位,共16级  
-    NVIC_Init(&NVIC_InitStructure);   //根据NVIC_InitStruct中指定的参数初始化外设NVIC寄存器  
+    HalUartConfig_t uartConfig;
+    uartConfig.baudRate = 9600;
+    uartConfig.parity = PARITY_NONE;
+    HalUartInit(SYS_UART_COMM_PORT, &uartConfig);
 }
-*/
+
 void testWMInit(void)
 {
-//    HalGPIOInit(STATUS_LED_PIN, HAL_GPIO_DIR_OUT);
-//    HalGPIOSet(STATUS_LED_PIN, HAL_GPIO_LEVEL_LOW);
-//    irqInit();
     WMInitialize();
     WMEventRegister(testEventHandle);
 #if DEV_MASTER
@@ -189,6 +174,12 @@ void testWMInit(void)
     WMSetModuleType(SLAVE_TYPE);
     WMNetBuildStart(1);
 #endif
+    
+    commPortInit();
+    MFStart(lowDataSend);
+    uint8_t mac[4] = {0x01, 0x00, 0xac, 0x99};
+    SysSetMacAddr(mac);
+
 }
 
 void testWMPoll(void)

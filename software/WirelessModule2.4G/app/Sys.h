@@ -6,6 +6,9 @@
 
 #define SYS_TEST_WM 0
 
+#define SYS_UART_LOGS_PORT HAL_UART_1  //日志串口
+#define SYS_UART_COMM_PORT HAL_UART_0  //通信串口 
+
 typedef uint32_t SysTime_t;
 
 #define SYS_NET_BUILD_INFO_ADDR  (0x8000000 + 0xF000)  //60k 组网信息

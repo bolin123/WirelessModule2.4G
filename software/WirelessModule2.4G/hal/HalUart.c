@@ -205,14 +205,11 @@ ROM_FUNC void HalUartPoll(void)
 
 }
 
-extern void SysUartRecvHandle(uint8_t byte);
+extern void SysUartRecvHandle(HalUart_t port, uint8_t byte);
 
 static void HalUartDataCallback(HalUart_t uart, uint8_t data)
 {
-    if(uart == HAL_UART_1)
-    {
-        SysUartRecvHandle(data);
-    }
+    SysUartRecvHandle(uart, data);
 }
 
 void HalUartInit(HalUart_t uart, const HalUartConfig_t *cfg)

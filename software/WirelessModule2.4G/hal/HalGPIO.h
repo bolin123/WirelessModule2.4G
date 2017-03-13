@@ -3,6 +3,8 @@
 
 #include "HalCtype.h"
 
+#define HAL_GPIO_NUM_INVAILD 0xff
+
 typedef uint8_t HalGPIO_t;
 //GPIO·½Ïò
 typedef enum

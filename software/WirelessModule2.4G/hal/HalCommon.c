@@ -1,12 +1,5 @@
 #include "HalCommon.h"
-#include "HalClk.h"
-#include "HalWdg.h"
-#include "HalGPIO.h"
-#include "HalTimer.h"
-#include "HalUart.h"
-#include "HalSpi.h"
-#include "HalFlash.h"
-#include "HalWait.h"
+#include "Sys.h"
 
 #define HAL_STATUS_LED_PIN  0x11 //PB1
 
@@ -21,7 +14,7 @@ static uint8_t g_statusCount = 0;
 //redirect "printf()"
 int fputc(int ch, FILE *f)
 {
-	HalUartWrite(HAL_UART_0, (const uint8_t *)&ch, 1);
+	HalUartWrite(SYS_UART_LOGS_PORT, (const uint8_t *)&ch, 1);
 	return ch;
 }
 
@@ -31,7 +24,7 @@ static void debugUartInit(void)
     uartConfig.baudRate = 115200;
     uartConfig.parity = PARITY_NONE;
     uartConfig.recvHandler = NULL;
-    HalUartInit(HAL_UART_0, &uartConfig);
+    HalUartInit(SYS_UART_LOGS_PORT, &uartConfig);
 }
 
 /*
