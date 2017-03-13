@@ -25,5 +25,9 @@
 .\objects\haluart.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h
 .\objects\haluart.o: ..\..\hal\HalGPIO.h
 .\objects\haluart.o: ..\..\hal\HalCommon.h
-.\objects\haluart.o: ..\..\app\Sys.h
-.\objects\haluart.o: ..\..\hal\HalCommon.h
+.\objects\haluart.o: ..\..\hal\HalClk.h
+.\objects\haluart.o: ..\..\hal\HalWdg.h
+.\objects\haluart.o: ..\..\hal\HalTimer.h
+.\objects\haluart.o: ..\..\hal\HalSpi.h
+.\objects\haluart.o: ..\..\hal\HalFlash.h
+.\objects\haluart.o: ..\..\hal\HalWait.h

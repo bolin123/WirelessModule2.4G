@@ -27,5 +27,11 @@
 .\objects\phylayer.o: ..\..\hal\HalWait.h
 .\objects\phylayer.o: ..\..\app\Sys.h
 .\objects\phylayer.o: ..\..\hal\HalCommon.h
-.\objects\phylayer.o: ..\..\app\Sys.h
+.\objects\phylayer.o: ..\..\hal\HalClk.h
+.\objects\phylayer.o: ..\..\hal\HalWdg.h
+.\objects\phylayer.o: ..\..\hal\HalGPIO.h
+.\objects\phylayer.o: ..\..\hal\HalTimer.h
+.\objects\phylayer.o: ..\..\hal\HalUart.h
+.\objects\phylayer.o: ..\..\hal\HalSpi.h
+.\objects\phylayer.o: ..\..\hal\HalFlash.h
 .\objects\phylayer.o: ..\..\app\VTList.h

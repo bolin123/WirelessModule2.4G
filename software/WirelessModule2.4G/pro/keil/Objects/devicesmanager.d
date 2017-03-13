@@ -25,8 +25,14 @@
 .\objects\devicesmanager.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h
 .\objects\devicesmanager.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h
 .\objects\devicesmanager.o: ..\..\hal\HalCommon.h
-.\objects\devicesmanager.o: ..\..\app\Sys.h
+.\objects\devicesmanager.o: ..\..\hal\HalClk.h
+.\objects\devicesmanager.o: ..\..\hal\HalWdg.h
+.\objects\devicesmanager.o: ..\..\hal\HalGPIO.h
+.\objects\devicesmanager.o: ..\..\hal\HalTimer.h
+.\objects\devicesmanager.o: ..\..\hal\HalUart.h
+.\objects\devicesmanager.o: ..\..\hal\HalSpi.h
+.\objects\devicesmanager.o: ..\..\hal\HalFlash.h
+.\objects\devicesmanager.o: ..\..\hal\HalWait.h
 .\objects\devicesmanager.o: ..\..\app\net\NetLayer.h
 .\objects\devicesmanager.o: ..\..\app\net\PHYLayer.h
 .\objects\devicesmanager.o: ..\..\app\net\NRF24L01P\NRF24L01.h
-.\objects\devicesmanager.o: ..\..\hal\HalFlash.h

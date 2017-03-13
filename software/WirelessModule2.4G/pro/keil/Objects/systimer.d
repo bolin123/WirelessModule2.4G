@@ -25,4 +25,11 @@
 .\objects\systimer.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h
 .\objects\systimer.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h
 .\objects\systimer.o: ..\..\hal\HalCommon.h
-.\objects\systimer.o: ..\..\app\Sys.h
+.\objects\systimer.o: ..\..\hal\HalClk.h
+.\objects\systimer.o: ..\..\hal\HalWdg.h
+.\objects\systimer.o: ..\..\hal\HalGPIO.h
+.\objects\systimer.o: ..\..\hal\HalTimer.h
+.\objects\systimer.o: ..\..\hal\HalUart.h
+.\objects\systimer.o: ..\..\hal\HalSpi.h
+.\objects\systimer.o: ..\..\hal\HalFlash.h
+.\objects\systimer.o: ..\..\hal\HalWait.h

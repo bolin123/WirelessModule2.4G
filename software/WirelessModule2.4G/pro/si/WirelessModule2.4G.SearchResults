@@ -1,5 +1,4 @@
----- NRF24L01Check Matches (4 in 4 files) ----
-Manufacture.c (app):    if(!NRF24L01Check())
-NRF24L01.c (app\net\nrf24l01p):bool NRF24L01Check(uint8_t flag)
-NRF24L01.h (app\net\nrf24l01p):bool NRF24L01Check(uint8_t flag);
-PHYLayer.c (app\net):    if(!NRF24L01Check())
+---- WMWakeupHandle Matches (3 in 2 files) ----
+HalPower.c (hal):extern void WMWakeupHandle(void);
+HalPower.c (hal):        WMWakeupHandle();
+WirelessModule.c (app):void WMWakeupHandle(void)

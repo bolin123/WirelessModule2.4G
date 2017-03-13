@@ -1,6 +1,7 @@
 .\objects\halcommon.o: ..\..\hal\HalCommon.c
 .\objects\halcommon.o: ..\..\hal\HalCommon.h
-.\objects\halcommon.o: ..\..\app\Sys.h
+.\objects\halcommon.o: ..\..\hal\HalClk.h
+.\objects\halcommon.o: ..\..\hal\HalWdg.h
 .\objects\halcommon.o: ..\..\hal\HalCtype.h
 .\objects\halcommon.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\halcommon.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
@@ -24,12 +25,10 @@
 .\objects\halcommon.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_tim.h
 .\objects\halcommon.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h
 .\objects\halcommon.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h
-.\objects\halcommon.o: ..\..\hal\HalCommon.h
-.\objects\halcommon.o: ..\..\hal\HalClk.h
-.\objects\halcommon.o: ..\..\hal\HalWdg.h
 .\objects\halcommon.o: ..\..\hal\HalGPIO.h
 .\objects\halcommon.o: ..\..\hal\HalTimer.h
 .\objects\halcommon.o: ..\..\hal\HalUart.h
 .\objects\halcommon.o: ..\..\hal\HalSpi.h
 .\objects\halcommon.o: ..\..\hal\HalFlash.h
 .\objects\halcommon.o: ..\..\hal\HalWait.h
+.\objects\halcommon.o: ..\..\app\Sys.h

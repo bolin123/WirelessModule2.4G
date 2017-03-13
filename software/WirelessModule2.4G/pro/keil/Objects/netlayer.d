@@ -27,7 +27,14 @@
 .\objects\netlayer.o: ..\..\app\net\NRF24L01P\NRF24L01.h
 .\objects\netlayer.o: ..\..\app\Sys.h
 .\objects\netlayer.o: ..\..\hal\HalCommon.h
-.\objects\netlayer.o: ..\..\app\Sys.h
+.\objects\netlayer.o: ..\..\hal\HalClk.h
+.\objects\netlayer.o: ..\..\hal\HalWdg.h
+.\objects\netlayer.o: ..\..\hal\HalGPIO.h
+.\objects\netlayer.o: ..\..\hal\HalTimer.h
+.\objects\netlayer.o: ..\..\hal\HalUart.h
+.\objects\netlayer.o: ..\..\hal\HalSpi.h
+.\objects\netlayer.o: ..\..\hal\HalFlash.h
+.\objects\netlayer.o: ..\..\hal\HalWait.h
 .\objects\netlayer.o: ..\..\app\SysTimer.h
 .\objects\netlayer.o: ..\..\app\DevicesManager.h
 .\objects\netlayer.o: ..\..\app\VTList.h

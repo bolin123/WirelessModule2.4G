@@ -1,6 +1,6 @@
 Dependencies for Project 'WirelessModule2.4G', Target 'WirelessModule2.4G': (DO NOT MODIFY !)
 F (..\..\app\main.c)(0x58B3F0F7)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
-I (..\..\app\Sys.h)(0x58BFBE9A)
+I (..\..\app\Sys.h)(0x58C26A1C)
 I (..\..\hal\HalCtype.h)(0x589C2FED)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5475F300)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x5475F300)
@@ -23,9 +23,17 @@ I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_spi.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_tim.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h)(0x54808D12)
-I (..\..\hal\HalCommon.h)(0x58BCCD3C)
-F (..\..\app\Sys.c)(0x58C10F40)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\sys.o --omf_browse .\objects\sys.crf --depend .\objects\sys.d)
-I (..\..\app\Sys.h)(0x58BFBE9A)
+I (..\..\hal\HalCommon.h)(0x58C201FC)
+I (..\..\hal\HalClk.h)(0x5591F1F8)
+I (..\..\hal\HalWdg.h)(0x58C0FC6E)
+I (..\..\hal\HalGPIO.h)(0x58C115FA)
+I (..\..\hal\HalTimer.h)(0x5854E92B)
+I (..\..\hal\HalUart.h)(0x58B3BC0A)
+I (..\..\hal\HalSpi.h)(0x58AE781B)
+I (..\..\hal\HalFlash.h)(0x5865B319)
+I (..\..\hal\HalWait.h)(0x58C1039E)
+F (..\..\app\Sys.c)(0x58C21BFD)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\sys.o --omf_browse .\objects\sys.crf --depend .\objects\sys.d)
+I (..\..\app\Sys.h)(0x58C26A1C)
 I (..\..\hal\HalCtype.h)(0x589C2FED)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5475F300)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x5475F300)
@@ -48,18 +56,25 @@ I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_spi.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_tim.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h)(0x54808D12)
-I (..\..\hal\HalCommon.h)(0x58BCCD3C)
+I (..\..\hal\HalCommon.h)(0x58C201FC)
+I (..\..\hal\HalClk.h)(0x5591F1F8)
+I (..\..\hal\HalWdg.h)(0x58C0FC6E)
+I (..\..\hal\HalGPIO.h)(0x58C115FA)
+I (..\..\hal\HalTimer.h)(0x5854E92B)
+I (..\..\hal\HalUart.h)(0x58B3BC0A)
+I (..\..\hal\HalSpi.h)(0x58AE781B)
+I (..\..\hal\HalFlash.h)(0x5865B319)
+I (..\..\hal\HalWait.h)(0x58C1039E)
 I (..\..\app\SysTimer.h)(0x58788DF5)
 I (..\..\app\WirelessModule.h)(0x58BE4B04)
-I (..\..\app\net\NetLayer.h)(0x58BD00E4)
+I (..\..\app\net\NetLayer.h)(0x58C273D0)
 I (..\..\app\net\PHYLayer.h)(0x58BFB71C)
 I (..\..\app\net\NRF24L01P\NRF24L01.h)(0x58BFB6A4)
-I (..\..\app\Manufacture.h)(0x58C0F80C)
-I (..\..\hal\HalFlash.h)(0x5865B319)
+I (..\..\app\Manufacture.h)(0x58C21C5C)
 I (..\..\app\MProto.h)(0x58BE6DA4)
 F (..\..\app\SysTimer.c)(0x58788DFF)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\systimer.o --omf_browse .\objects\systimer.crf --depend .\objects\systimer.d)
 I (..\..\app\SysTimer.h)(0x58788DF5)
-I (..\..\app\Sys.h)(0x58BFBE9A)
+I (..\..\app\Sys.h)(0x58C26A1C)
 I (..\..\hal\HalCtype.h)(0x589C2FED)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5475F300)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x5475F300)
@@ -82,10 +97,18 @@ I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_spi.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_tim.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h)(0x54808D12)
-I (..\..\hal\HalCommon.h)(0x58BCCD3C)
-F (..\..\app\WirelessModule.c)(0x58C0F7B4)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\wirelessmodule.o --omf_browse .\objects\wirelessmodule.crf --depend .\objects\wirelessmodule.d)
+I (..\..\hal\HalCommon.h)(0x58C201FC)
+I (..\..\hal\HalClk.h)(0x5591F1F8)
+I (..\..\hal\HalWdg.h)(0x58C0FC6E)
+I (..\..\hal\HalGPIO.h)(0x58C115FA)
+I (..\..\hal\HalTimer.h)(0x5854E92B)
+I (..\..\hal\HalUart.h)(0x58B3BC0A)
+I (..\..\hal\HalSpi.h)(0x58AE781B)
+I (..\..\hal\HalFlash.h)(0x5865B319)
+I (..\..\hal\HalWait.h)(0x58C1039E)
+F (..\..\app\WirelessModule.c)(0x58C273F8)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\wirelessmodule.o --omf_browse .\objects\wirelessmodule.crf --depend .\objects\wirelessmodule.d)
 I (..\..\app\WirelessModule.h)(0x58BE4B04)
-I (..\..\app\Sys.h)(0x58BFBE9A)
+I (..\..\app\Sys.h)(0x58C26A1C)
 I (..\..\hal\HalCtype.h)(0x589C2FED)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5475F300)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x5475F300)
@@ -108,17 +131,24 @@ I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_spi.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_tim.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h)(0x54808D12)
-I (..\..\hal\HalCommon.h)(0x58BCCD3C)
-I (..\..\app\net\NetLayer.h)(0x58BD00E4)
+I (..\..\hal\HalCommon.h)(0x58C201FC)
+I (..\..\hal\HalClk.h)(0x5591F1F8)
+I (..\..\hal\HalWdg.h)(0x58C0FC6E)
+I (..\..\hal\HalGPIO.h)(0x58C115FA)
+I (..\..\hal\HalTimer.h)(0x5854E92B)
+I (..\..\hal\HalUart.h)(0x58B3BC0A)
+I (..\..\hal\HalSpi.h)(0x58AE781B)
+I (..\..\hal\HalFlash.h)(0x5865B319)
+I (..\..\hal\HalWait.h)(0x58C1039E)
+I (..\..\app\net\NetLayer.h)(0x58C273D0)
 I (..\..\app\net\PHYLayer.h)(0x58BFB71C)
 I (..\..\app\net\NRF24L01P\NRF24L01.h)(0x58BFB6A4)
 I (..\..\app\SysTimer.h)(0x58788DF5)
 I (..\..\app\DevicesManager.h)(0x58B7BBAA)
 I (..\..\app\PowerManager.h)(0x58BE94D3)
-I (..\..\hal\HalFlash.h)(0x5865B319)
 F (..\..\app\DevicesManager.c)(0x58BF5AE5)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\devicesmanager.o --omf_browse .\objects\devicesmanager.crf --depend .\objects\devicesmanager.d)
 I (..\..\app\DevicesManager.h)(0x58B7BBAA)
-I (..\..\app\Sys.h)(0x58BFBE9A)
+I (..\..\app\Sys.h)(0x58C26A1C)
 I (..\..\hal\HalCtype.h)(0x589C2FED)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5475F300)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x5475F300)
@@ -141,14 +171,21 @@ I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_spi.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_tim.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h)(0x54808D12)
-I (..\..\hal\HalCommon.h)(0x58BCCD3C)
-I (..\..\app\net\NetLayer.h)(0x58BD00E4)
+I (..\..\hal\HalCommon.h)(0x58C201FC)
+I (..\..\hal\HalClk.h)(0x5591F1F8)
+I (..\..\hal\HalWdg.h)(0x58C0FC6E)
+I (..\..\hal\HalGPIO.h)(0x58C115FA)
+I (..\..\hal\HalTimer.h)(0x5854E92B)
+I (..\..\hal\HalUart.h)(0x58B3BC0A)
+I (..\..\hal\HalSpi.h)(0x58AE781B)
+I (..\..\hal\HalFlash.h)(0x5865B319)
+I (..\..\hal\HalWait.h)(0x58C1039E)
+I (..\..\app\net\NetLayer.h)(0x58C273D0)
 I (..\..\app\net\PHYLayer.h)(0x58BFB71C)
 I (..\..\app\net\NRF24L01P\NRF24L01.h)(0x58BFB6A4)
-I (..\..\hal\HalFlash.h)(0x5865B319)
-F (..\..\app\MProto.c)(0x58BFADB3)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\mproto.o --omf_browse .\objects\mproto.crf --depend .\objects\mproto.d)
+F (..\..\app\MProto.c)(0x58C2717B)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\mproto.o --omf_browse .\objects\mproto.crf --depend .\objects\mproto.d)
 I (..\..\app\MProto.h)(0x58BE6DA4)
-I (..\..\app\Sys.h)(0x58BFBE9A)
+I (..\..\app\Sys.h)(0x58C26A1C)
 I (..\..\hal\HalCtype.h)(0x589C2FED)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5475F300)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x5475F300)
@@ -171,17 +208,25 @@ I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_spi.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_tim.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h)(0x54808D12)
-I (..\..\hal\HalCommon.h)(0x58BCCD3C)
+I (..\..\hal\HalCommon.h)(0x58C201FC)
+I (..\..\hal\HalClk.h)(0x5591F1F8)
+I (..\..\hal\HalWdg.h)(0x58C0FC6E)
+I (..\..\hal\HalGPIO.h)(0x58C115FA)
+I (..\..\hal\HalTimer.h)(0x5854E92B)
+I (..\..\hal\HalUart.h)(0x58B3BC0A)
+I (..\..\hal\HalSpi.h)(0x58AE781B)
+I (..\..\hal\HalFlash.h)(0x5865B319)
+I (..\..\hal\HalWait.h)(0x58C1039E)
 I (..\..\app\VTList.h)(0x58777540)
 I (..\..\app\WirelessModule.h)(0x58BE4B04)
-I (..\..\app\net\NetLayer.h)(0x58BD00E4)
+I (..\..\app\net\NetLayer.h)(0x58C273D0)
 I (..\..\app\net\PHYLayer.h)(0x58BFB71C)
 I (..\..\app\net\NRF24L01P\NRF24L01.h)(0x58BFB6A4)
 I (..\..\app\DevicesManager.h)(0x58B7BBAA)
-I (..\..\hal\HalUart.h)(0x58B3BC0A)
+I (..\..\app\Manufacture.h)(0x58C21C5C)
 F (..\..\app\PowerManager.c)(0x58BEA802)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\powermanager.o --omf_browse .\objects\powermanager.crf --depend .\objects\powermanager.d)
 I (..\..\app\PowerManager.h)(0x58BE94D3)
-I (..\..\app\Sys.h)(0x58BFBE9A)
+I (..\..\app\Sys.h)(0x58C26A1C)
 I (..\..\hal\HalCtype.h)(0x589C2FED)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5475F300)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x5475F300)
@@ -204,15 +249,23 @@ I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_spi.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_tim.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h)(0x54808D12)
-I (..\..\hal\HalCommon.h)(0x58BCCD3C)
+I (..\..\hal\HalCommon.h)(0x58C201FC)
+I (..\..\hal\HalClk.h)(0x5591F1F8)
+I (..\..\hal\HalWdg.h)(0x58C0FC6E)
+I (..\..\hal\HalGPIO.h)(0x58C115FA)
+I (..\..\hal\HalTimer.h)(0x5854E92B)
+I (..\..\hal\HalUart.h)(0x58B3BC0A)
+I (..\..\hal\HalSpi.h)(0x58AE781B)
+I (..\..\hal\HalFlash.h)(0x5865B319)
+I (..\..\hal\HalWait.h)(0x58C1039E)
 I (..\..\app\WirelessModule.h)(0x58BE4B04)
-I (..\..\app\net\NetLayer.h)(0x58BD00E4)
+I (..\..\app\net\NetLayer.h)(0x58C273D0)
 I (..\..\app\net\PHYLayer.h)(0x58BFB71C)
 I (..\..\app\net\NRF24L01P\NRF24L01.h)(0x58BFB6A4)
 I (..\..\hal\HalPower.h)(0x58BE951C)
-F (..\..\app\Manufacture.c)(0x58C102D2)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\manufacture.o --omf_browse .\objects\manufacture.crf --depend .\objects\manufacture.d)
-I (..\..\app\Manufacture.h)(0x58C0F80C)
-I (..\..\app\Sys.h)(0x58BFBE9A)
+F (..\..\app\Manufacture.c)(0x58C23CCF)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\manufacture.o --omf_browse .\objects\manufacture.crf --depend .\objects\manufacture.d)
+I (..\..\app\Manufacture.h)(0x58C21C5C)
+I (..\..\app\Sys.h)(0x58C26A1C)
 I (..\..\hal\HalCtype.h)(0x589C2FED)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5475F300)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x5475F300)
@@ -235,15 +288,22 @@ I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_spi.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_tim.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h)(0x54808D12)
-I (..\..\hal\HalCommon.h)(0x58BCCD3C)
+I (..\..\hal\HalCommon.h)(0x58C201FC)
+I (..\..\hal\HalClk.h)(0x5591F1F8)
+I (..\..\hal\HalWdg.h)(0x58C0FC6E)
+I (..\..\hal\HalGPIO.h)(0x58C115FA)
+I (..\..\hal\HalTimer.h)(0x5854E92B)
 I (..\..\hal\HalUart.h)(0x58B3BC0A)
-I (..\..\app\net\Netlayer.h)(0x58BD00E4)
+I (..\..\hal\HalSpi.h)(0x58AE781B)
+I (..\..\hal\HalFlash.h)(0x5865B319)
+I (..\..\hal\HalWait.h)(0x58C1039E)
+I (..\..\app\net\Netlayer.h)(0x58C273D0)
 I (..\..\app\net\PHYLayer.h)(0x58BFB71C)
 I (..\..\app\net\NRF24L01P\NRF24L01.h)(0x58BFB6A4)
 I (..\..\app\SysTimer.h)(0x58788DF5)
-F (..\..\app\testWM.c)(0x58BEAB21)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\testwm.o --omf_browse .\objects\testwm.crf --depend .\objects\testwm.d)
+F (..\..\app\testWM.c)(0x58C24C79)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\testwm.o --omf_browse .\objects\testwm.crf --depend .\objects\testwm.d)
 I (..\..\app\testWM.h)(0x58859EFA)
-I (..\..\hal\HalGPIO.h)(0x586DF477)
+I (..\..\hal\HalGPIO.h)(0x58C115FA)
 I (..\..\hal\HalCtype.h)(0x589C2FED)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5475F300)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x5475F300)
@@ -267,11 +327,19 @@ I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_tim.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h)(0x54808D12)
 I (..\..\app\WirelessModule.h)(0x58BE4B04)
-I (..\..\app\Sys.h)(0x58BFBE9A)
-I (..\..\hal\HalCommon.h)(0x58BCCD3C)
-I (..\..\app\net\NetLayer.h)(0x58BD00E4)
+I (..\..\app\Sys.h)(0x58C26A1C)
+I (..\..\hal\HalCommon.h)(0x58C201FC)
+I (..\..\hal\HalClk.h)(0x5591F1F8)
+I (..\..\hal\HalWdg.h)(0x58C0FC6E)
+I (..\..\hal\HalTimer.h)(0x5854E92B)
+I (..\..\hal\HalUart.h)(0x58B3BC0A)
+I (..\..\hal\HalSpi.h)(0x58AE781B)
+I (..\..\hal\HalFlash.h)(0x5865B319)
+I (..\..\hal\HalWait.h)(0x58C1039E)
+I (..\..\app\net\NetLayer.h)(0x58C273D0)
 I (..\..\app\net\PHYLayer.h)(0x58BFB71C)
 I (..\..\app\net\NRF24L01P\NRF24L01.h)(0x58BFB6A4)
+I (..\..\app\Manufacture.h)(0x58C21C5C)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_pwr.h)(0x54808D12)
 F (..\..\hal\HalClk.c)(0x58B96347)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\halclk.o --omf_browse .\objects\halclk.crf --depend .\objects\halclk.d)
 I (..\..\hal\HalClk.h)(0x5591F1F8)
@@ -299,9 +367,10 @@ I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_syscfg.h)(0x54808D12)
 I (..\..\hal\HalUart.h)(0x58B3BC0A)
-F (..\..\hal\HalCommon.c)(0x58C10704)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\halcommon.o --omf_browse .\objects\halcommon.crf --depend .\objects\halcommon.d)
-I (..\..\hal\HalCommon.h)(0x58BCCD3C)
-I (..\..\app\Sys.h)(0x58BFBE9A)
+F (..\..\hal\HalCommon.c)(0x58C204DB)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\halcommon.o --omf_browse .\objects\halcommon.crf --depend .\objects\halcommon.d)
+I (..\..\hal\HalCommon.h)(0x58C201FC)
+I (..\..\hal\HalClk.h)(0x5591F1F8)
+I (..\..\hal\HalWdg.h)(0x58C0FC6E)
 I (..\..\hal\HalCtype.h)(0x589C2FED)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5475F300)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x5475F300)
@@ -324,14 +393,13 @@ I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_spi.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_tim.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h)(0x54808D12)
-I (..\..\hal\HalClk.h)(0x5591F1F8)
-I (..\..\hal\HalWdg.h)(0x58C0FC6E)
-I (..\..\hal\HalGPIO.h)(0x586DF477)
+I (..\..\hal\HalGPIO.h)(0x58C115FA)
 I (..\..\hal\HalTimer.h)(0x5854E92B)
 I (..\..\hal\HalUart.h)(0x58B3BC0A)
 I (..\..\hal\HalSpi.h)(0x58AE781B)
 I (..\..\hal\HalFlash.h)(0x5865B319)
 I (..\..\hal\HalWait.h)(0x58C1039E)
+I (..\..\app\Sys.h)(0x58C26A1C)
 F (..\..\hal\HalFlash.c)(0x5865B358)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\halflash.o --omf_browse .\objects\halflash.crf --depend .\objects\halflash.d)
 I (..\..\hal\HalFlash.h)(0x5865B319)
 I (..\..\hal\HalCtype.h)(0x589C2FED)
@@ -357,7 +425,7 @@ I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_tim.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h)(0x54808D12)
 F (..\..\hal\HalGPIO.c)(0x586F12A1)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\halgpio.o --omf_browse .\objects\halgpio.crf --depend .\objects\halgpio.d)
-I (..\..\hal\HalGPIO.h)(0x586DF477)
+I (..\..\hal\HalGPIO.h)(0x58C115FA)
 I (..\..\hal\HalCtype.h)(0x589C2FED)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5475F300)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x5475F300)
@@ -429,7 +497,7 @@ I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_spi.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_tim.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h)(0x54808D12)
-F (..\..\hal\HalUart.c)(0x58BCBE03)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\haluart.o --omf_browse .\objects\haluart.crf --depend .\objects\haluart.d)
+F (..\..\hal\HalUart.c)(0x58C2048F)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\haluart.o --omf_browse .\objects\haluart.crf --depend .\objects\haluart.d)
 I (..\..\hal\HalUart.h)(0x58B3BC0A)
 I (..\..\hal\HalCtype.h)(0x589C2FED)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5475F300)
@@ -453,9 +521,14 @@ I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_spi.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_tim.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h)(0x54808D12)
-I (..\..\hal\HalGPIO.h)(0x586DF477)
-I (..\..\hal\HalCommon.h)(0x58BCCD3C)
-I (..\..\app\Sys.h)(0x58BFBE9A)
+I (..\..\hal\HalGPIO.h)(0x58C115FA)
+I (..\..\hal\HalCommon.h)(0x58C201FC)
+I (..\..\hal\HalClk.h)(0x5591F1F8)
+I (..\..\hal\HalWdg.h)(0x58C0FC6E)
+I (..\..\hal\HalTimer.h)(0x5854E92B)
+I (..\..\hal\HalSpi.h)(0x58AE781B)
+I (..\..\hal\HalFlash.h)(0x5865B319)
+I (..\..\hal\HalWait.h)(0x58C1039E)
 F (..\..\hal\HalWait.c)(0x58C103D7)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\halwait.o --omf_browse .\objects\halwait.crf --depend .\objects\halwait.d)
 I (..\..\hal\HalWait.h)(0x58C1039E)
 I (..\..\hal\HalCtype.h)(0x589C2FED)
@@ -480,9 +553,9 @@ I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_spi.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_tim.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h)(0x54808D12)
-F (..\..\hal\HalPower.c)(0x58BE9511)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\halpower.o --omf_browse .\objects\halpower.crf --depend .\objects\halpower.d)
+F (..\..\hal\HalPower.c)(0x58C11703)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\halpower.o --omf_browse .\objects\halpower.crf --depend .\objects\halpower.d)
 I (..\..\hal\HalPower.h)(0x58BE951C)
-I (..\..\app\Sys.h)(0x58BFBE9A)
+I (..\..\app\Sys.h)(0x58C26A1C)
 I (..\..\hal\HalCtype.h)(0x589C2FED)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5475F300)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x5475F300)
@@ -505,13 +578,19 @@ I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_spi.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_tim.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h)(0x54808D12)
-I (..\..\hal\HalCommon.h)(0x58BCCD3C)
+I (..\..\hal\HalCommon.h)(0x58C201FC)
 I (..\..\hal\HalClk.h)(0x5591F1F8)
-I (..\..\hal\HalGPIO.h)(0x586DF477)
+I (..\..\hal\HalWdg.h)(0x58C0FC6E)
+I (..\..\hal\HalGPIO.h)(0x58C115FA)
+I (..\..\hal\HalTimer.h)(0x5854E92B)
+I (..\..\hal\HalUart.h)(0x58B3BC0A)
+I (..\..\hal\HalSpi.h)(0x58AE781B)
+I (..\..\hal\HalFlash.h)(0x5865B319)
+I (..\..\hal\HalWait.h)(0x58C1039E)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_syscfg.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_pwr.h)(0x54808D12)
 F (..\..\app\net\NetLayer.c)(0x58BF691C)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\netlayer.o --omf_browse .\objects\netlayer.crf --depend .\objects\netlayer.d)
-I (..\..\app\net\NetLayer.h)(0x58BD00E4)
+I (..\..\app\net\NetLayer.h)(0x58C273D0)
 I (..\..\hal\HalCtype.h)(0x589C2FED)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5475F300)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x5475F300)
@@ -536,12 +615,20 @@ I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h)(0x54808D12)
 I (..\..\app\net\PHYLayer.h)(0x58BFB71C)
 I (..\..\app\net\NRF24L01P\NRF24L01.h)(0x58BFB6A4)
-I (..\..\app\Sys.h)(0x58BFBE9A)
-I (..\..\hal\HalCommon.h)(0x58BCCD3C)
+I (..\..\app\Sys.h)(0x58C26A1C)
+I (..\..\hal\HalCommon.h)(0x58C201FC)
+I (..\..\hal\HalClk.h)(0x5591F1F8)
+I (..\..\hal\HalWdg.h)(0x58C0FC6E)
+I (..\..\hal\HalGPIO.h)(0x58C115FA)
+I (..\..\hal\HalTimer.h)(0x5854E92B)
+I (..\..\hal\HalUart.h)(0x58B3BC0A)
+I (..\..\hal\HalSpi.h)(0x58AE781B)
+I (..\..\hal\HalFlash.h)(0x5865B319)
+I (..\..\hal\HalWait.h)(0x58C1039E)
 I (..\..\app\SysTimer.h)(0x58788DF5)
 I (..\..\app\DevicesManager.h)(0x58B7BBAA)
 I (..\..\app\VTList.h)(0x58777540)
-F (..\..\app\net\PHYLayer.c)(0x58BFB7C1)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\phylayer.o --omf_browse .\objects\phylayer.crf --depend .\objects\phylayer.d)
+F (..\..\app\net\PHYLayer.c)(0x58C5F677)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\phylayer.o --omf_browse .\objects\phylayer.crf --depend .\objects\phylayer.d)
 I (..\..\app\net\PHYLayer.h)(0x58BFB71C)
 I (..\..\hal\HalCtype.h)(0x589C2FED)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5475F300)
@@ -567,10 +654,17 @@ I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h)(0x54808D12)
 I (..\..\app\net\NRF24L01P\NRF24L01.h)(0x58BFB6A4)
 I (..\..\hal\HalWait.h)(0x58C1039E)
-I (..\..\app\Sys.h)(0x58BFBE9A)
-I (..\..\hal\HalCommon.h)(0x58BCCD3C)
+I (..\..\app\Sys.h)(0x58C26A1C)
+I (..\..\hal\HalCommon.h)(0x58C201FC)
+I (..\..\hal\HalClk.h)(0x5591F1F8)
+I (..\..\hal\HalWdg.h)(0x58C0FC6E)
+I (..\..\hal\HalGPIO.h)(0x58C115FA)
+I (..\..\hal\HalTimer.h)(0x5854E92B)
+I (..\..\hal\HalUart.h)(0x58B3BC0A)
+I (..\..\hal\HalSpi.h)(0x58AE781B)
+I (..\..\hal\HalFlash.h)(0x5865B319)
 I (..\..\app\VTList.h)(0x58777540)
-F (..\..\app\net\NRF24L01P\NRF24L01.c)(0x58BFB69A)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\nrf24l01.o --omf_browse .\objects\nrf24l01.crf --depend .\objects\nrf24l01.d)
+F (..\..\app\net\NRF24L01P\NRF24L01.c)(0x58C117D0)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\nrf24l01.o --omf_browse .\objects\nrf24l01.crf --depend .\objects\nrf24l01.d)
 I (..\..\app\net\NRF24L01P\NRF24L01.h)(0x58BFB6A4)
 I (..\..\hal\HalCtype.h)(0x589C2FED)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5475F300)
@@ -594,11 +688,15 @@ I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_spi.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_tim.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_usart.h)(0x54808D12)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_misc.h)(0x54808D12)
-I (..\..\hal\HalGPIO.h)(0x586DF477)
+I (..\..\hal\HalGPIO.h)(0x58C115FA)
 I (..\..\hal\HalSpi.h)(0x58AE781B)
 I (..\..\hal\HalWait.h)(0x58C1039E)
-I (..\..\hal\HalCommon.h)(0x58BCCD3C)
-I (..\..\app\Sys.h)(0x58BFBE9A)
+I (..\..\hal\HalCommon.h)(0x58C201FC)
+I (..\..\hal\HalClk.h)(0x5591F1F8)
+I (..\..\hal\HalWdg.h)(0x58C0FC6E)
+I (..\..\hal\HalTimer.h)(0x5854E92B)
+I (..\..\hal\HalUart.h)(0x58B3BC0A)
+I (..\..\hal\HalFlash.h)(0x5865B319)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_syscfg.h)(0x54808D12)
 F (..\..\lib\STM32F0xx_StdPeriph_Driver\src\stm32f0xx_dma.c)(0x54808D14)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\hal -I..\..\lib\STM32F0xx_StdPeriph_Driver\inc -I..\..\app -I..\..\app\net -I..\..\app\net\NRF24L01P-I F:\project\WirelessModule2.4G\software\WirelessModule2.4G\pro\keil\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0-D__UVISION_VERSION="513" -D_RTE_ -DSTM32F030x8 -DUSE_STDPERIPH_DRIVER -DSTM32F0XX_MD-o .\objects\stm32f0xx_dma.o --omf_browse .\objects\stm32f0xx_dma.crf --depend .\objects\stm32f0xx_dma.d)
 I (..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_dma.h)(0x54808D12)

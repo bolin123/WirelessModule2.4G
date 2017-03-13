@@ -27,8 +27,15 @@
 .\objects\testwm.o: ..\..\app\WirelessModule.h
 .\objects\testwm.o: ..\..\app\Sys.h
 .\objects\testwm.o: ..\..\hal\HalCommon.h
-.\objects\testwm.o: ..\..\app\Sys.h
+.\objects\testwm.o: ..\..\hal\HalClk.h
+.\objects\testwm.o: ..\..\hal\HalWdg.h
+.\objects\testwm.o: ..\..\hal\HalTimer.h
+.\objects\testwm.o: ..\..\hal\HalUart.h
+.\objects\testwm.o: ..\..\hal\HalSpi.h
+.\objects\testwm.o: ..\..\hal\HalFlash.h
+.\objects\testwm.o: ..\..\hal\HalWait.h
 .\objects\testwm.o: ..\..\app\net\NetLayer.h
 .\objects\testwm.o: ..\..\app\net\PHYLayer.h
 .\objects\testwm.o: ..\..\app\net\NRF24L01P\NRF24L01.h
+.\objects\testwm.o: ..\..\app\Manufacture.h
 .\objects\testwm.o: ..\..\lib\STM32F0xx_StdPeriph_Driver\inc\stm32f0xx_pwr.h
