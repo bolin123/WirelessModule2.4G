@@ -7,8 +7,9 @@
 
 #define MPROTO_FRAME_HEAD 0xFC
 
+#define MPROTO_UART_BAUDRATE 38400
 #define MPROTO_SEND_RETRY_TIME  3
-#define MPROTO_SEND_TIMEOUT  200
+#define MPROTO_SEND_TIMEOUT  500
 
 typedef struct MProtoFrameSendList_st
 {
@@ -435,7 +436,7 @@ static void mprotoEventHandle(WMEvent_t event, void *args)
 static void commPortInit(void)
 {
     HalUartConfig_t uartConfig;
-    uartConfig.baudRate = 9600;
+    uartConfig.baudRate = MPROTO_UART_BAUDRATE;
     uartConfig.parity = PARITY_NONE;
     HalUartInit(SYS_UART_COMM_PORT, &uartConfig);
 }

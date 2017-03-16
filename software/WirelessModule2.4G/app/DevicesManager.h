@@ -48,7 +48,7 @@ void DMDeviceSet(uint8_t addr, uint8_t key, uint32_t uid, uint8_t *type, bool sl
 uint8_t DMDeviceCreate(bool sleep, uint8_t key, uint32_t uid, uint8_t *type);
 uint8_t DMDeviceUidToAddress(uint32_t uid);
 DMDevicesInfo_t *DMDeviceAddressFind(uint8_t addr);
-void DMUpdateHeartbeat(uint8_t addr);
+void DMUpdateOnlineTime(uint8_t addr);
 void DMEventRegister(DMEventHandle_cb eventHandle);
 void DMPoll(void);
 void DMInitialize(void);

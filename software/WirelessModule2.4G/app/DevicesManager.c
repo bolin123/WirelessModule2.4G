@@ -162,7 +162,7 @@ uint8_t DMDeviceCreate(bool sleep, uint8_t key, uint32_t uid, uint8_t *type)
     return DM_DEVICE_INVALID_FLAG;
 }
 
-void DMUpdateHeartbeat(uint8_t addr)
+void DMUpdateOnlineTime(uint8_t addr)
 {
     DMDevicesInfo_t *info = DMDeviceAddressFind(addr);
 

@@ -9,7 +9,7 @@
 #include "MProto.h"
 #endif
 
-static uint8_t g_sysVersion[4] = {1, 0, 0, 2}; //系统版本号
+static uint8_t g_sysVersion[4] = {1, 0, 0, 3}; //系统版本号
 //xorshift随机数算法
 static uint32_t x = 123456789UL, y = 567819012UL, z = 321456780UL, w = 1234UL;
 

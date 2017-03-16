@@ -1,4 +1,5 @@
----- WMWakeupHandle Matches (3 in 2 files) ----
-HalPower.c (hal):extern void WMWakeupHandle(void);
-HalPower.c (hal):        WMWakeupHandle();
-WirelessModule.c (app):void WMWakeupHandle(void)
+---- DMUpdateHeartbeat Matches (4 in 3 files) ----
+DevicesManager.c (app):void DMUpdateHeartbeat(uint8_t addr)
+DevicesManager.h (app):void DMUpdateHeartbeat(uint8_t addr);
+WirelessModule.c (app):            DMUpdateHeartbeat((uint8_t)from);
+WirelessModule.c (app):                DMUpdateHeartbeat((uint8_t)from);

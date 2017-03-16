@@ -353,7 +353,7 @@ static void wmEventHandle(NetEventType_t event, uint32_t from, void *args)
         if(DMDeviceAddressFind(from) != NULL)
         {
             SysLog("HEARTBEAT, addr = %d", from);
-            DMUpdateHeartbeat((uint8_t)from);
+            DMUpdateOnlineTime((uint8_t)from);
             if(g_mode == WM_MS_MODE_MASTER)
             {
                 NetSendHeartbeat(from); //ack heartbeat
@@ -366,13 +366,13 @@ static void wmEventHandle(NetEventType_t event, uint32_t from, void *args)
             WMUserData_t userData;
             if(DMDeviceAddressFind(from) != NULL)
             {
-                DMUpdateHeartbeat((uint8_t)from);
-                SysLog("USER_DATA from [%d]", from);
-
+                DMUpdateOnlineTime((uint8_t)from);
                 userData.from = (uint8_t)from;
                 userData.isBroadcast = netData->isBroadcast;
                 userData.dlen = netData->dlen;
                 userData.data = netData->data;
+                
+                SysLog("USER_DATA from [%d], length %d", from, netData->dlen);
                 if(g_eventHandle != NULL)
                 {
                     g_eventHandle(WM_EVENT_USER_DATA, (void *)&userData);

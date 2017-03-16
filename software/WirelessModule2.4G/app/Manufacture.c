@@ -6,11 +6,11 @@
 #define MF_FRAME_HEAD_FLAG 0xaa
 #define MF_FRAME_BUFF_LEN  255
 
-#define MF_ERR_CHECK_SUCCESS   1
+#define MF_ERR_CHECK_SUCCESS   0xfe
 #define MF_ERR_NOT_READY       0
-#define MF_ERR_NO_MAC         -1
-#define MF_ERR_PHY_NOT_FOUND  -2
-#define MF_ERR_NOT_FOUND_DEV  -3
+#define MF_ERR_NO_MAC          1
+#define MF_ERR_PHY_NOT_FOUND   2
+#define MF_ERR_NOT_FOUND_DEV   0xff
 
 /*-------------------
 * 0x00 Í¨ÐÅ²âÊÔ
@@ -75,7 +75,7 @@ typedef struct
 
 static uint8_t g_count = 0;
 static uint8_t g_testType = 0;
-static int8_t g_testResult = 0;
+static uint8_t g_testResult = 0;
 static bool g_sendCheckResult = false;
 
 static bool g_start = false;
@@ -103,7 +103,7 @@ static void mfFrameSend(uint8_t type, uint8_t *data, uint8_t len)
     memcpy(frame->data, data, len);
     frame->crc = checkSum(&frame->crc + 1, frame->len - 1);
 #if 1
-
+    SysPrintf("len = %d:", len);
     uint8_t i;
     for(i = 0; i < frame->len + 2; i++)
     {
@@ -124,7 +124,7 @@ static void mfSendTestResult(void)
         return ;
     }
     
-    uint8_t data[10];
+    uint8_t data[128];
     char *msg = NULL;
     static SysTime_t lastSendTime = 0;
     MFTestResp_t *resp = (MFTestResp_t *)data;
@@ -132,26 +132,28 @@ static void mfSendTestResult(void)
     if(lastSendTime == 0 || SysTimeHasPast(lastSendTime, 200))
     {
         resp->testType = g_testType;
-        resp->testRes  = g_testResult > 0 ? true : false;
-        resp->testFailReason = 1;
+        resp->testRes  = g_testResult == MF_ERR_CHECK_SUCCESS ? true : false;
+        resp->testFailReason = g_testResult;
         if(g_testResult == MF_ERR_CHECK_SUCCESS)
         {
             msg = "test success.";
         }
         else if(g_testResult == MF_ERR_PHY_NOT_FOUND)
         {
-            msg = "can't find RF sensor!";
+            msg = "can't find RF chip!";
         }
         else if(g_testResult == MF_ERR_NOT_FOUND_DEV)
         {
             msg = "scan timeout!";
+            SysLog("%s", msg);
         }
         else if(g_testResult == MF_ERR_NO_MAC)
         {
-            msg = "no MAC address!";
+            msg = "no MAC!";
         }
             
         strcpy((char *)resp->msg, msg);
+        
         mfFrameSend(MF_TYPE_CHECK_RESULT, data, sizeof(MFTestResp_t) + strlen(msg));
     }   
 }
@@ -223,7 +225,8 @@ static void mfFrameHandle(MFFrame_t *frame)
     switch(frame->type)
     {
         case MF_TYPE_COMM_TEST:
-            mfFrameSend(MF_TYPE_COMM_TEST, NULL, 0);
+            data[0] = 0;
+            mfFrameSend(MF_TYPE_COMM_TEST, data, 1);
             break;
         case MF_TYPE_WRITE_INFO:
             writeInfo = (MFWriteInfo_t *)frame->data;
@@ -245,11 +248,11 @@ static void mfFrameHandle(MFFrame_t *frame)
             break;
         case MF_TYPE_START_CHECK:
             mfFrameSend(MF_TYPE_START_CHECK, NULL, 0);
-            mfStartSelfCheck(data[0]);
+            mfStartSelfCheck(frame->data[0]);
             break;
         case MF_TYPE_CHECK_RESULT:
             g_sendCheckResult = false;
-            g_testResult = 0;
+            g_testResult = MF_ERR_NOT_READY;
             break;
         case MF_TYPE_UNLOCK:
             mfFrameSend(MF_TYPE_UNLOCK, NULL, 0);
