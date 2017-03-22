@@ -175,10 +175,6 @@ void DMUpdateOnlineTime(uint8_t addr)
         }
         info->hbInfo.lastHBTime = SysTime();
     }
-    else
-    {
-        SysErrLog("device not found!!!");
-    }
 }
 
 static void heartbeatPoll(void)

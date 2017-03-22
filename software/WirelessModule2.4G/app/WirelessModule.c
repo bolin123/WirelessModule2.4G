@@ -364,7 +364,7 @@ static void wmEventHandle(NetEventType_t event, uint32_t from, void *args)
         {
             NetUserData_t *netData = (NetUserData_t *)args;
             WMUserData_t userData;
-            if(from == NET_BROADCAST_NET_ADDR || DMDeviceAddressFind(from) != NULL)
+            if(netData->isBroadcast || DMDeviceAddressFind(from) != NULL)
             {
                 DMUpdateOnlineTime((uint8_t)from);
                 userData.from = (uint8_t)from;

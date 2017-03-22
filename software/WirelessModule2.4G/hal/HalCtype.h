@@ -33,7 +33,7 @@
 
 #define HalPrintf(...)  printf(__VA_ARGS__)
 #define SysPrintf  HalPrintf
-#define SysLog(...) {SysPrintf("%s:",__FUNCTION__); SysPrintf(__VA_ARGS__); SysPrintf("\n");}
+#define SysLog(...) {SysPrintf("%s:", __FUNCTION__); SysPrintf(__VA_ARGS__); SysPrintf("\n");}
 #define SysErrLog(...) {SysPrintf("%s:[!!!ERROR]",__FUNCTION__); SysPrintf(__VA_ARGS__); SysPrintf("\n");}
 
 #endif

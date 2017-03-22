@@ -151,7 +151,7 @@ bool NRF24L01Check(void)
 {
 	uint8_t buf[5]={0XA5,0XA5,0XA5,0XA5,0XA5};
 	uint8_t i;
-    SysLog("");
+    
 
 	nrf24l01WriteBuf(WRITE_REG + TX_ADDR, buf, 5);
     memset(buf, 0xff, sizeof(buf));
@@ -161,10 +161,11 @@ bool NRF24L01Check(void)
     {
         if(buf[i] != 0XA5)
         {
+            SysLog("Failed");
             return false;
         }
     }   
-
+    SysLog("OK");
 	return true;
 }
 

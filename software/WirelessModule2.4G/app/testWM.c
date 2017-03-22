@@ -5,7 +5,7 @@
 
 #define DEV_MASTER  0
 
-#define SLAVE_TYPE "SLV202"
+#define SLAVE_TYPE "SLV201"
 #define MASTER_TYPE "MST001"
 #define STATUS_LED_PIN 0x11  //PB1
 
@@ -42,7 +42,7 @@ static void slavePoll(void)
     static uint8_t count = 0;
     uint8_t data[20] = {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0};
     
-    if(WMGetNetStatus() == WM_STATUS_NET_BUILDED && SysTimeHasPast(lastTime, 5700))
+    if(WMGetNetStatus() == WM_STATUS_NET_BUILDED && SysTimeHasPast(lastTime, 13700))
     {
         SysLog("send data:");
         memset(data, count, sizeof(data));
@@ -177,7 +177,7 @@ void testWMInit(void)
     
     commPortInit();
     MFStart(lowDataSend);
-    uint8_t mac[4] = {0xAE, 0x00, 0xac, 0x99};
+    uint8_t mac[4] = {0xAE, 0x00, 0xac, 0xaa};
     SysSetMacAddr(mac);
 
 }
