@@ -364,7 +364,7 @@ static void wmEventHandle(NetEventType_t event, uint32_t from, void *args)
         {
             NetUserData_t *netData = (NetUserData_t *)args;
             WMUserData_t userData;
-            if(DMDeviceAddressFind(from) != NULL)
+            if(from == NET_BROADCAST_NET_ADDR || DMDeviceAddressFind(from) != NULL)
             {
                 DMUpdateOnlineTime((uint8_t)from);
                 userData.from = (uint8_t)from;
@@ -452,6 +452,13 @@ int8_t WMNetBuildDelDevice(uint8_t *addr, uint8_t num)
     DMDevicesInfo_t *device;
 
     SysLog("");
+
+    if(g_mode != WM_MS_MODE_MASTER)
+    {
+        SysErrLog("Not master, can't del deivce!");
+        return -1;
+    }
+    
     if(num > DM_DEVICES_NUM_MAX)
     {
         return -1;
@@ -495,6 +502,11 @@ int8_t WMNetBuildAddDevice(uint8_t *id, uint8_t num)
     if(num > WM_SEARCH_DEVICE_NUM || num == 0)
     {
         SysErrLog("num[%d] out of rang!", num);
+        return -1;
+    }
+    if(g_mode != WM_MS_MODE_MASTER)
+    {
+        SysErrLog("Not master, can't add deivce!");
         return -1;
     }
     

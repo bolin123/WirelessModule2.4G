@@ -9,7 +9,7 @@
 #include "MProto.h"
 #endif
 
-static uint8_t g_sysVersion[4] = {1, 0, 0, 3}; //系统版本号
+static uint8_t g_sysVersion[4] = {1, 0, 1, 1}; //系统版本号
 //xorshift随机数算法
 static uint32_t x = 123456789UL, y = 567819012UL, z = 321456780UL, w = 1234UL;
 
@@ -122,6 +122,12 @@ void SysInitialize(void)
 #else
     MProtoInitialize();
 #endif
+    SysPrintf("===============================\n");
+    SysPrintf("Firmware version:%d.%d.%d.%d\n", g_sysVersion[0], g_sysVersion[1], 
+                                                g_sysVersion[2], g_sysVersion[3]);
+    SysPrintf("Build time:%s\n", __DATE__" "__TIME__);
+    SysPrintf("================================\n");
+
 }
 
 void SysPoll(void)
@@ -136,3 +142,4 @@ void SysPoll(void)
     HalPoll();
     SysTimerPoll();
 }
+

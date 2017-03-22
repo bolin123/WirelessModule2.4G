@@ -1,8 +1,6 @@
 #include "HalCommon.h"
 #include "Sys.h"
 
-#define HAL_STATUS_LED_PIN  0x11 //PB1
-
 static uint32_t volatile g_sysTimerCount;
 static bool g_intEnable = true;
 
@@ -121,7 +119,7 @@ void HalInitialize(void)
     HalUartInitialize();
     HalSpiInitialize();
     HalFlashInitialize();
-    //HalIwdtInitialize();
+    //HalWdgInitialize(); //低功耗情况下无法使用独立看门狗
     HalStatusLedInit();
     debugUartInit();
 }
@@ -132,7 +130,7 @@ ROM_FUNC void HalPoll(void)
     HalSpiPoll();
     HalFlashPoll();
     HalUartPoll();
-    //HalIwdtFeed();
     HalStatusLedPoll();
+    //HalWdgFeed();
 }
 

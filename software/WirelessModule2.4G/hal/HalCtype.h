@@ -1,10 +1,7 @@
 #ifndef HAL_CTYPE_H
 #define HAL_CTYPE_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "stm32f0xx.h"
+#include "HalConfig.h"
 
 #undef bool
 #define bool unsigned char

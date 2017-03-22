@@ -77,6 +77,7 @@ static uint8_t g_count = 0;
 static uint8_t g_testType = 0;
 static uint8_t g_testResult = 0;
 static bool g_sendCheckResult = false;
+static bool g_rfFoundDevice = false;
 
 static bool g_start = false;
 static uint8_t *g_frameBuf = NULL;
@@ -155,34 +156,42 @@ static void mfSendTestResult(void)
         strcpy((char *)resp->msg, msg);
         
         mfFrameSend(MF_TYPE_CHECK_RESULT, data, sizeof(MFTestResp_t) + strlen(msg));
+        lastSendTime = SysTime();
     }   
 }
 
 static void mfSearchResultHandle(uint32_t uid, NetbuildSubDeviceInfo_t *result)
 {
-    SysLog("");
-    g_sendCheckResult = true;
-    g_testResult = MF_ERR_CHECK_SUCCESS;
-    NetBuildStop(0xff);
-}
-
-static void testTimeoutHandle(void *args)
-{
-    if(g_testResult == MF_ERR_NOT_READY)
+    if(result != NULL)
     {
-        g_sendCheckResult = true;
-        g_testResult = MF_ERR_NOT_FOUND_DEV;
+        SysLog("found deivce [%c%c%c%c%c%c]", result->type[0], result->type[1], result->type[2], 
+                                              result->type[3], result->type[4], result->type[5]);
+        g_rfFoundDevice = true;
+        NetBuildStop(0xff);
     }
     
 }
 
+static void testTimeoutHandle(void *args)
+{
+    g_sendCheckResult = true;
+    if(g_rfFoundDevice)
+    {
+        SysLog("test success");
+        g_testResult = MF_ERR_CHECK_SUCCESS;
+    }
+    else
+    {
+        SysLog("test faile! scan no device");
+        g_testResult = MF_ERR_NOT_FOUND_DEV;
+    }
+}
+
 static void searchDevice(void *args)
 {
-    if(g_testResult == MF_ERR_NOT_READY)
-    {
-        NetbuildSearchDevice("ZCTEST", mfSearchResultHandle);
-        SysTimerSet(testTimeoutHandle, 2000, 0, NULL);
-    }
+    NetBuildStart();
+    NetbuildSearchDevice("ZCTEST", mfSearchResultHandle);
+    SysTimerSet(testTimeoutHandle, 1000, 0, NULL);
 }
 
 static void mfStartSelfCheck(uint8_t type)
@@ -200,18 +209,21 @@ static void mfStartSelfCheck(uint8_t type)
     {
         g_testResult = MF_ERR_NO_MAC;
         g_sendCheckResult = true;
+        SysLog("No mac address!");
         return;
     }
     if(PHYInitError())
     {
         g_testResult = MF_ERR_PHY_NOT_FOUND;
         g_sendCheckResult = true;
+        SysLog("NRF24L01+ communicate error!");
         return;
     }
     
     NetBuildStart();
+    g_rfFoundDevice = false;
     NetbuildSearchDevice("ZCTEST", mfSearchResultHandle);
-    SysTimerSet(searchDevice, 2000, 0, NULL);
+    SysTimerSet(searchDevice, 1000, 0, NULL);
    
 }
 

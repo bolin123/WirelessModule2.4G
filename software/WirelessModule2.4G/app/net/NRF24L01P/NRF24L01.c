@@ -5,15 +5,10 @@
 #include "HalCommon.h"
 #include "stm32f0xx_syscfg.h"
 
-
-#define NRF24L01_CE_PIN   0x10 //PB0
-#define NRF24L01_CSN_PIN  0x04 //PA4
-#define NRF24L01_IRQ_PIN  0x01 //PA1
-
-#define NRF24L01_CSN_LOW() HalGPIOSet(NRF24L01_CSN_PIN, HAL_GPIO_LEVEL_LOW)
-#define NRF24L01_CSN_HIGH() HalGPIOSet(NRF24L01_CSN_PIN, HAL_GPIO_LEVEL_HIGH)
-#define NRF24L01_CE_LOW() HalGPIOSet(NRF24L01_CE_PIN, HAL_GPIO_LEVEL_LOW)
-#define NRF24L01_CE_HIGH() HalGPIOSet(NRF24L01_CE_PIN, HAL_GPIO_LEVEL_HIGH)
+#define NRF24L01_CSN_LOW() HalGPIOSet(HAL_RF_CHIP_CS_PIN, HAL_GPIO_LEVEL_LOW)
+#define NRF24L01_CSN_HIGH() HalGPIOSet(HAL_RF_CHIP_CS_PIN, HAL_GPIO_LEVEL_HIGH)
+#define NRF24L01_CE_LOW() HalGPIOSet(HAL_RF_CHIP_CE_PIN, HAL_GPIO_LEVEL_LOW)
+#define NRF24L01_CE_HIGH() HalGPIOSet(HAL_RF_CHIP_CE_PIN, HAL_GPIO_LEVEL_HIGH)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //NRF24L01??¡ä??¡Â2¨´¡Á¡Â?¨¹¨¢?
@@ -116,7 +111,7 @@ uint8_t NRF24L01TxPacket(const uint8_t *txbuf, uint8_t len)
     HalInterruptsSetEnable(false);
   	nrf24l01WriteBuf(WR_TX_PLOAD, txbuf, len);
  	NRF24L01_CE_HIGH();
-	while(HalGPIOGet(NRF24L01_IRQ_PIN) != 0);
+	while(HalGPIOGet(HAL_RF_CHIP_IRQ_PIN) != 0);
 	sta = nrf24l01ReadReg(STATUS);
 	nrf24l01WriteReg(WRITE_REG+STATUS,sta);
     
@@ -223,7 +218,7 @@ uint8_t NRF24L01GetStatus(void)
 
 bool NRF24L01DataRecved(void)
 {
-    return HalGPIOGet(NRF24L01_IRQ_PIN) == HAL_GPIO_LEVEL_LOW;
+    return HalGPIOGet(HAL_RF_CHIP_IRQ_PIN) == HAL_GPIO_LEVEL_LOW;
 }
 #if 0
 static void nrf24l01SetPinIRQ(void)
@@ -263,10 +258,10 @@ void NRF24L01Sleep(bool sleep)
 
 void NRF24L01Initialize(void)
 {
-    HalGPIOInit(NRF24L01_CE_PIN, HAL_GPIO_DIR_OUT);
-    HalGPIOInit(NRF24L01_CSN_PIN, HAL_GPIO_DIR_OUT);
+    HalGPIOInit(HAL_RF_CHIP_CE_PIN, HAL_GPIO_DIR_OUT);
+    HalGPIOInit(HAL_RF_CHIP_CS_PIN, HAL_GPIO_DIR_OUT);
     
-    HalGPIOInit(NRF24L01_IRQ_PIN, HAL_GPIO_DIR_IN);
+    HalGPIOInit(HAL_RF_CHIP_IRQ_PIN, HAL_GPIO_DIR_IN);
     //nrf24l01SetPinIRQ();
     
     NRF24L01_CE_LOW();

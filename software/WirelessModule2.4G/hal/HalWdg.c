@@ -3,7 +3,7 @@
 
 void HalWdgInitialize(void)
 {
-#if 0
+#if 1
 	//检测系统是否由独立看门狗喂狗复位
 	if (RCC_GetFlagStatus(RCC_FLAG_IWDGRST) != RESET)
 	{ 
@@ -26,7 +26,7 @@ void HalWdgInitialize(void)
 
 void HalWdgFeed(void)
 {
-#if 0
+#if 1
 	/* 从新导入IWDG计数器 */
 	IWDG_ReloadCounter();  
 #endif

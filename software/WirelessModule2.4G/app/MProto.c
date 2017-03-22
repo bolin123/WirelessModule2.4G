@@ -5,11 +5,11 @@
 #include "Manufacture.h"
 #include "HalUart.h"
 
-#define MPROTO_FRAME_HEAD 0xFC
+#define MPROTO_FRAME_HEAD 0xFC //固定消息头
 
-#define MPROTO_UART_BAUDRATE 38400
-#define MPROTO_SEND_RETRY_TIME  3
-#define MPROTO_SEND_TIMEOUT  500
+#define MPROTO_UART_BAUDRATE 38400  //波特率
+#define MPROTO_SEND_RETRY_TIME  3   //超时重发次数
+#define MPROTO_SEND_TIMEOUT  500    //超时时间 500ms
 
 typedef struct MProtoFrameSendList_st
 {
@@ -123,6 +123,7 @@ static void sendAck(void)
     mprotoFrameSend(MPROTO_FRAME_TYPE_ACK, false, NULL, 0);
 }
 
+/*发送协调通信结果*/
 static void coordinationResult(uint8_t build, bool success, uint8_t addr1, uint8_t addr2)
 {
     uint8_t data[4];
@@ -147,12 +148,12 @@ static void mprotoFrameHandle(MProtoFrameType_t type, bool needAck, uint8_t *dat
     uint8_t buff[255];
     uint8_t len;
 
-    if(needAck && type != MPROTO_FRAME_TYPE_ACK)
+    if(needAck && type != MPROTO_FRAME_TYPE_ACK)//是否应答
     {
         sendAck();
     }
 
-    if(!g_gotDeviceInfo && type != MPROTO_FRAME_TYPE_REQUEST)
+    if(!g_gotDeviceInfo && type != MPROTO_FRAME_TYPE_REQUEST)//回复请求设备信息消息前不处理其他消息
     {
         return;
     }
@@ -177,7 +178,7 @@ static void mprotoFrameHandle(MProtoFrameType_t type, bool needAck, uint8_t *dat
             WMSetMasterSlaveMode(deviceInfo->isMaster);
             WMSetSleepMode(deviceInfo->needSleep);
             g_gotDeviceInfo = true;
-            MFStop();
+            MFStop(); //停止产测
         }
         break;
     case MPROTO_FRAME_TYPE_NETCONFIG:
@@ -192,16 +193,12 @@ static void mprotoFrameHandle(MProtoFrameType_t type, bool needAck, uint8_t *dat
     case MPROTO_FRAME_TYPE_DEL_DEVICE:
         WMNetBuildDelDevice(data, dlen);
         break;
-    //case MPROTO_FRAME_TYPE_HEARTBEAT: //ignore
-    //    break;
     case MPROTO_FRAME_TYPE_USER_DATA:
         {
             MProtoUserData_t *userData = (MProtoUserData_t *)data;
             WMNetUserDataSend(userData->to, userData->data, userData->dlen);
         }
         break;
-    //case MPROTO_FRAME_TYPE_ON_OFFLINE: //ignore
-    //    break;
     case MPROTO_FRAME_TYPE_COORDINATION:
         if(WMDeviceCoordination(data[0], data[1], data[2]) < 0)
         {
@@ -301,6 +298,7 @@ static void mprotoSendListHandle(void)
     }
 }
 
+/*请求设备信息*/
 static void requestDeviceInfo(void)
 {
     static SysTime_t lastRequestTime = 0;
@@ -315,6 +313,7 @@ static void requestDeviceInfo(void)
     }
 }
 
+/*判断网络状态是否改变*/
 static bool netStatusChanged(void)
 {
     uint8_t status;
@@ -337,6 +336,7 @@ static void heartbeatSend(void)
     static uint16_t heartbeatTime = 5000;
     uint8_t status;
 
+    /*心跳时间或状态改变的情况下发送心跳消息*/
     if(lastHbTime == 0 || SysTimeHasPast(lastHbTime, heartbeatTime) || netStatusChanged())
     {
         status = (WMGetNetStatus() << 1) + WMIsDeviceOnline();

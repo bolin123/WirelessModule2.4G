@@ -190,7 +190,7 @@ static void heartbeatPoll(void)
     if(info->allocate == DM_DEVICE_ALLOCATE_FLAG && info->hbInfo.isOnline)
     {
         //hbTime = info->netInfo.sleep ? NET_SLEEP_DEVICE_HBTIME : NET_NORMAL_DEVICE_HBTIME;
-        if(SysTimeHasPast(info->hbInfo.lastHBTime, info->hbInfo.hbInterval * 3)) // 3次未收到心跳，认为是掉线
+        if(SysTimeHasPast(info->hbInfo.lastHBTime, info->hbInfo.hbInterval * 5)) // 5次未收到心跳，认为是掉线
         {
             info->hbInfo.isOnline = false;
             g_eventHandle(address, DM_EVENT_OFFLINE);

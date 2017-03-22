@@ -25,20 +25,13 @@ void HalInterruptsSetEnable(bool enable);
  */
 bool HalInterruptsGetEnable(void);
 
-/** 关闭日志 */
-void HalDisableLog(void);
-
 /** 重启 */
 void HalReboot(void);
 
 /** 系统运行时间，毫秒 */
 uint32_t HalRunningTime(void);
 
-/** 微秒延时 */
-void HalDelayUs(uint16_t us);
-
-void HalEntrySleep(void);
-void HalWakeup(void);
+/*设置LED闪烁方式*/
 void HalStatusLedSet(uint8_t blinkCount);
 
 #endif // HAL_H
