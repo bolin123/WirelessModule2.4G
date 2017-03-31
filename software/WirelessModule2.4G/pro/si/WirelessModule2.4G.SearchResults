@@ -1,5 +1,6 @@
----- DMUpdateHeartbeat Matches (4 in 3 files) ----
-DevicesManager.c (app):void DMUpdateHeartbeat(uint8_t addr)
-DevicesManager.h (app):void DMUpdateHeartbeat(uint8_t addr);
-WirelessModule.c (app):            DMUpdateHeartbeat((uint8_t)from);
-WirelessModule.c (app):                DMUpdateHeartbeat((uint8_t)from);
+---- HAL_RF_CHIP_IRQ_PIN Matches (5 in 2 files) ----
+HalConfig.h (hal):#define HAL_RF_CHIP_IRQ_PIN  0x01 //PA1
+HalConfig.h (hal):#define HAL_RF_CHIP_IRQ_PIN  0x04 //PA4
+NRF24L01.c (app\net\nrf24l01p):	while(HalGPIOGet(HAL_RF_CHIP_IRQ_PIN) != 0);
+NRF24L01.c (app\net\nrf24l01p):    return HalGPIOGet(HAL_RF_CHIP_IRQ_PIN) == HAL_GPIO_LEVEL_LOW;
+NRF24L01.c (app\net\nrf24l01p):    HalGPIOInit(HAL_RF_CHIP_IRQ_PIN, HAL_GPIO_DIR_IN);
